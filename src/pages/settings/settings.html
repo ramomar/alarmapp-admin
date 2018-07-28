@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Ajustes
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label>Notificaciones push</ion-label>
+      <ion-toggle> [(ngModel)]="pushNotificationsEnabled"></ion-toggle>
+      <p>Activar la sirena temporalmente</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Probar sirena</ion-label>
+      <button ion-button outline item-end >
+        Activar
+      </button>
+    </ion-item>
+  </ion-list>
+</ion-content>

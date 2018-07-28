@@ -1,17 +1,26 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Principal</ion-title>
   </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="houseSummary">
+       <ion-segment-button value="overview">
+         Resumen
+       </ion-segment-button>
+      <ion-segment-button value="firstFloor">
+        Planta 1
+      </ion-segment-button>
+      <ion-segment-button value="secondFloor">
+        Planta 2
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
 </ion-content>
+
+<ion-footer>
+  <button ion-button full>Activar</button>
+</ion-footer>
