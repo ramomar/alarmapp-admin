@@ -1,0 +1,21 @@
+<ion-card>
+  <ion-card-header>
+    {{title}}
+  </ion-card-header>
+  <img src="{{floorDiagramUrl}}"/>
+  <ion-card-content>
+  </ion-card-content>
+  <ion-row>
+    <ion-col align-self-center text-center>
+      <button ion-button icon-start clear small>
+        <ion-icon name="eye"></ion-icon>
+        <div>Vigilar solo aquí</div>
+      </button>
+    </ion-col>
+    <ion-col align-self-center text-center>
+      <ion-note>
+        <a href="#">{{nonWatchingCount}} sin vigilar</a>
+      </ion-note>
+    </ion-col>
+  </ion-row>
+</ion-card>

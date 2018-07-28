@@ -20,49 +20,18 @@
 
 <ion-content padding>
   <div [ngSwitch]="overview">
-    <ion-card *ngSwitchCase="'firstFloor'">
-      <ion-card-header>
-        Planta 1
-      </ion-card-header>
-    <img src="assets/house_diagrams/floor1_450_275_animated.svg" style="display: block; margin-left: auto; margin-right: auto; width: 50%; height: auto;"/>
-      <ion-card-content>
-      </ion-card-content>
-      <ion-row>
-        <ion-col align-self-center text-center>
-          <button ion-button icon-start clear small>
-            <ion-icon name="eye"></ion-icon>
-            <div>Vigilar solo aquí</div>
-          </button>
-        </ion-col>
-        <ion-col align-self-center text-center>
-          <ion-note>
-            <a href="#">3 sin vigilar</a>
-          </ion-note>
-        </ion-col>
-      </ion-row>
-    </ion-card>
-
-    <ion-card *ngSwitchCase="'secondFloor'">
-      <ion-card-header>
-        Planta 2
-      </ion-card-header>
-      <img src="assets/house_diagrams/floor2_450_275_animated.svg" style="display: block; margin-left: auto; margin-right: auto; width: 50%; height: auto;"/>
-      <ion-card-content>
-      </ion-card-content>
-      <ion-row>
-        <ion-col align-self-center text-center>
-          <button ion-button icon-start clear small>
-            <ion-icon name="eye"></ion-icon>
-            <div>Vigilar solo aquí</div>
-          </button>
-        </ion-col>
-        <ion-col align-self-center text-center>
-          <ion-note>
-            <a href="#">4 sin vigilar</a> <!-- Maybe add something like tooltip or popover here -->
-          </ion-note>
-        </ion-col>
-      </ion-row>
-    </ion-card>
+    <div *ngSwitchCase="'firstFloor'">
+      <floor-diagram-card
+              floorDiagramUrl="assets/house_diagrams/floor1_450_275_animated.svg"
+              title="Planta 1">
+      </floor-diagram-card>
+    </div>
+    <div *ngSwitchCase="'secondFloor'">
+      <floor-diagram-card
+              floorDiagramUrl="assets/house_diagrams/floor2_450_275_animated.svg"
+              title="Planta 2">
+      </floor-diagram-card>
+    </div>
   </div>
 </ion-content>
 

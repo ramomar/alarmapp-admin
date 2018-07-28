@@ -9,13 +9,15 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { FloorDiagramCard } from "../components/floor_diagram_card";
 
 @NgModule({
   declarations: [
     App,
     SettingsPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    FloorDiagramCard
   ],
   imports: [
     BrowserModule,
