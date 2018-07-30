@@ -9,7 +9,27 @@ export class SummaryCard {
   @Input()
   cardTitle: string;
 
-  constructor() {
+  private indicators: Array<SummaryCardIndicator>;
 
+  constructor() {
+    this.indicators = [];
   }
+
+  updateViewState(indicators: Array<SummaryCardIndicator>) {
+    this.indicators = indicators;
+  }
+}
+
+export class SummaryCardIndicator {
+ readonly title: string;
+ readonly content: string;
+ readonly color: string;
+
+ constructor(title: string,
+             content: string,
+             color: string) {
+   this.title = title;
+   this.content = content;
+   this.color = color;
+ }
 }

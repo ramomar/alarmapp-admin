@@ -9,9 +9,10 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { FloorDiagramCard } from "../components/floor_diagram_card";
-import { SummaryCard } from "../components/summary_card";
-import { AlarmService } from "../services/AlarmService";
+import { FloorDiagramCard } from '../components/floor_diagram_card';
+import { SummaryCard } from '../components/summary_card';
+import { AlarmSummaryCardDeck } from '../components/alarm_summary_card_deck';
+import { AlarmService } from '../services/AlarmService';
 
 import Config from '../config.json';
 
@@ -31,7 +32,8 @@ const alarmServiceFactory = () => {
     HomePage,
     TabsPage,
     FloorDiagramCard,
-    SummaryCard
+    SummaryCard,
+    AlarmSummaryCardDeck
   ],
   imports: [
     BrowserModule,

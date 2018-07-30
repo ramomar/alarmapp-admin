@@ -9,10 +9,10 @@
          Resumen
        </ion-segment-button>
       <ion-segment-button value="firstFloorSegment">
-        Planta 1
+        Primer piso
       </ion-segment-button>
       <ion-segment-button value="secondFloorSegment">
-        Planta 2
+        Segundo piso
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -21,26 +21,19 @@
 <ion-content padding>
   <div [ngSwitch]="overviewSegments">
     <section [hidden]="overviewSegments != 'summarySegment'">
-      <summary-card
-        cardTitle="General">
-      </summary-card>
-      <summary-card
-        cardTitle="Planta 1">
-      </summary-card>
-      <summary-card
-        cardTitle="Planta 2">
-      </summary-card>
+        <alarm-summary-card-deck #alarmSummaryCardDeck>
+        </alarm-summary-card-deck>
     </section>
     <section [hidden]="overviewSegments != 'firstFloorSegment'">
       <floor-diagram-card #firstFloorCard
-        cardTitle="Planta 1"
+        cardTitle="Primer piso"
         diagramHtmlId="firstFloorDiagram"
         floorDiagramUrl="assets/house_diagrams/floor1_450_275.svg">
       </floor-diagram-card>
     </section>
     <section [hidden]="overviewSegments != 'secondFloorSegment'">
       <floor-diagram-card #secondFloorCard
-        cardTitle="Planta 2"
+        cardTitle="Segundo piso"
         diagramHtmlId="secondFloorDiagram"
         floorDiagramUrl="assets/house_diagrams/floor2_450_275.svg">
       </floor-diagram-card>

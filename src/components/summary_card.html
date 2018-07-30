@@ -3,13 +3,12 @@
     {{cardTitle}}
   </ion-card-header>
   <ion-card-content>
-    <ion-item>
-      Sistema
-      <ion-badge item-end color="warning">Desactivado</ion-badge>
+    <ion-item *ngFor="let indicator of indicators">
+      {{indicator.title}}
+      <ion-badge item-end color="{{indicator.color}}">{{indicator.content}}</ion-badge>
     </ion-item>
-    <ion-item>
-      Sirena
-      <ion-badge item-end color="light">Sin sonar</ion-badge>
-    </ion-item>
+    <div *ngIf="indicators.length === 0">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div>
   </ion-card-content>
 </ion-card>
