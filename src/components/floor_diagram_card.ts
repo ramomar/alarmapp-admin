@@ -1,16 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Zone } from '../services/domain';
 
 @Component({
   selector: 'floor-diagram-card',
-  templateUrl: './floor_diagram_card.html',
-  inputs: ['title', 'floorDiagramUrl']
+  templateUrl: './floor_diagram_card.html'
 })
-export class FloorDiagramCard {
-  title: string;
+export class FloorDiagramCard implements OnInit {
+
+  @Input()
+  cardTitle: string;
+
+  @Input()
+  diagramHtmlId: string;
+
+  @Input()
   floorDiagramUrl: string;
+
+  private safeFloorDiagramUrl: SafeResourceUrl;
+
   private nonWatchingCount: number;
 
-  constructor() {
-    this.nonWatchingCount = 3;
+  constructor(private sanitizer: DomSanitizer) {
+
+  }
+
+  ngOnInit() {
+    this.nonWatchingCount = 2;
+    this.safeFloorDiagramUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.floorDiagramUrl);
+  }
+
+  public renderFloorStatus(zones: Array<Zone>): void {
   }
 }

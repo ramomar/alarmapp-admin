@@ -10,6 +10,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { FloorDiagramCard } from "../components/floor_diagram_card";
+import { SummaryCard } from "../components/summary_card";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { FloorDiagramCard } from "../components/floor_diagram_card";
     SettingsPage,
     HomePage,
     TabsPage,
-    FloorDiagramCard
+    FloorDiagramCard,
+    SummaryCard
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,7 @@ import { FloorDiagramCard } from "../components/floor_diagram_card";
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule {}

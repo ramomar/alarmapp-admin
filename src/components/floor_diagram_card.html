@@ -1,8 +1,8 @@
 <ion-card>
   <ion-card-header>
-    {{title}}
+    {{cardTitle}}
   </ion-card-header>
-  <img src="{{floorDiagramUrl}}"/>
+  <object [id]='diagramHtmlId' [data]='safeFloorDiagramUrl' type="image/svg+xml"></object>
   <ion-card-content>
   </ion-card-content>
   <ion-row>
@@ -14,7 +14,7 @@
     </ion-col>
     <ion-col align-self-center text-center>
       <ion-note>
-        <a href="#">{{nonWatchingCount}} sin vigilar</a>
+        <a href="#">{{nonWatchingCount}} zonas abiertas</a>
       </ion-note>
     </ion-col>
   </ion-row>

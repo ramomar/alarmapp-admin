@@ -4,14 +4,14 @@
   </ion-navbar>
 
   <ion-toolbar no-border-top>
-    <ion-segment [(ngModel)]="overview">
-       <ion-segment-button value="activity">
-         Actividad
+    <ion-segment [(ngModel)]="overviewSegments">
+       <ion-segment-button value="summarySegment">
+         Resumen
        </ion-segment-button>
-      <ion-segment-button value="firstFloor">
+      <ion-segment-button value="firstFloorSegment">
         Planta 1
       </ion-segment-button>
-      <ion-segment-button value="secondFloor">
+      <ion-segment-button value="secondFloorSegment">
         Planta 2
       </ion-segment-button>
     </ion-segment>
@@ -19,25 +19,38 @@
 </ion-header>
 
 <ion-content padding>
-  <div [ngSwitch]="overview">
-    <div *ngSwitchCase="'firstFloor'">
-      <floor-diagram-card
-              floorDiagramUrl="assets/house_diagrams/floor1_450_275_animated.svg"
-              title="Planta 1">
+  <div [ngSwitch]="overviewSegments">
+    <section [hidden]="overviewSegments != 'summarySegment'">
+      <summary-card
+        cardTitle="General">
+      </summary-card>
+      <summary-card
+        cardTitle="Planta 1">
+      </summary-card>
+      <summary-card
+        cardTitle="Planta 2">
+      </summary-card>
+    </section>
+    <section [hidden]="overviewSegments != 'firstFloorSegment'">
+      <floor-diagram-card #firstFloorCard
+        cardTitle="Planta 1"
+        diagramHtmlId="firstFloorDiagram"
+        floorDiagramUrl="assets/house_diagrams/floor1_450_275.svg">
       </floor-diagram-card>
-    </div>
-    <div *ngSwitchCase="'secondFloor'">
-      <floor-diagram-card
-              floorDiagramUrl="assets/house_diagrams/floor2_450_275_animated.svg"
-              title="Planta 2">
+    </section>
+    <section [hidden]="overviewSegments != 'secondFloorSegment'">
+      <floor-diagram-card #secondFloorCard
+        cardTitle="Planta 2"
+        diagramHtmlId="secondFloorDiagram"
+        floorDiagramUrl="assets/house_diagrams/floor2_450_275.svg">
       </floor-diagram-card>
-    </div>
+    </section>
   </div>
 </ion-content>
 
 <ion-footer>
   <button ion-button full icon-start big>
     <ion-icon name="eye"></ion-icon>
-    <div>Vigilar todo</div>
+    <div>Vigilar</div>
   </button>
 </ion-footer>
