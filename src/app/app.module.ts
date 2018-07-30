@@ -11,6 +11,18 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { FloorDiagramCard } from "../components/floor_diagram_card";
 import { SummaryCard } from "../components/summary_card";
+import { AlarmService } from "../services/AlarmService";
+
+import Config from '../config.json';
+
+const alarmServiceFactory = () => {
+  return new AlarmService(
+    Config.PARTICLE_API_HOST,
+    Config.PARTICLE_ACCESS_TOKEN,
+    Config.PARTICLE_EVENT_PREFIX,
+    Config.PARTICLE_DEVICE_ID
+  );
+};
 
 @NgModule({
   declarations: [
@@ -35,7 +47,8 @@ import { SummaryCard } from "../components/summary_card";
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    { provide: AlarmService, useFactory: alarmServiceFactory }
   ]
 })
 export class AppModule {}

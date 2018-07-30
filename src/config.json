@@ -1,0 +1,6 @@
+{
+  "PARTICLE_API_HOST": "https://api.particle.io",
+  "PARTICLE_ACCESS_TOKEN": "",
+  "PARTICLE_EVENT_PREFIX": "alarmState",
+  "PARTICLE_DEVICE_ID": ""
+}

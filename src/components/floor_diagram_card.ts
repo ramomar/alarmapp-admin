@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Zone } from '../services/domain';
+import { Zone } from '../services/services';
 
 @Component({
   selector: 'floor-diagram-card',
