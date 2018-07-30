@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Zone } from '../services/services';
 
 @Component({
   selector: 'floor-diagram-card',
@@ -30,6 +29,6 @@ export class FloorDiagramCard implements OnInit {
     this.safeFloorDiagramUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.floorDiagramUrl);
   }
 
-  public renderFloorStatus(zones: Array<Zone>): void {
+  public renderFloorState(t: any): void {
   }
 }

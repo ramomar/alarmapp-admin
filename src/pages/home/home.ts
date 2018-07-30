@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ContentChildren, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { FloorDiagramCard } from '../../components/floor_diagram_card';
-import { AlarmService } from "../../services/AlarmService";
+import { AlarmService } from '../../services/AlarmService';
+import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
 
 @Component({
   selector: 'page-home',
@@ -26,7 +27,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.alarmService.open(console.log);
+    this.alarmService.open(msg => console.log(parseAlarmStateMessage(msg)));
     this.alarmService.requestAlarmState()
       .then(console.log)
       .catch(console.log);
