@@ -1,51 +1,45 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { AreaSummary, AreaZonesMappings } from "../services/parsing/parsing";
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AreaSummary, AreaZonesMappings } from '../services/parsing/parsing';
 
 @Component({
   selector: 'floor-diagram-card',
   templateUrl: './floor_diagram_card.html'
 })
-export class FloorDiagramCard implements OnInit {
+export class FloorDiagramCard {
 
   @Input()
   cardTitle: string;
 
-  @Input()
-  diagramHtmlId: string;
-
-  @Input()
-  floorDiagramUrl: string;
-
   @ViewChild('floorDiagram')
   floorDiagram: ElementRef;
 
-  private safeFloorDiagramUrl: SafeResourceUrl;
+  private ctaDisabled: boolean;
 
   private openAreas: number;
 
   private areas: Array<AreaSummary>;
 
-  constructor(private sanitizer: DomSanitizer) {
+  constructor() {
     this.areas = [];
   }
 
-  ngOnInit() {
-    this.safeFloorDiagramUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.floorDiagramUrl);
-  }
-
-  ngAfterViewInit() {
-  }
-
-  public updateComponentState(areas: Array<AreaSummary>): void {
+  public updateComponentState(areas: Array<AreaSummary>, systemIsActive: boolean): void {
+    this.ctaDisabled = systemIsActive;
     this.openAreas = areas.filter(a => !a.isClosed).length;
     this.areas = areas;
 
-    const diagram = this.floorDiagram.nativeElement.contentDocument;
+    const diagram = this.floorDiagram.nativeElement.firstElementChild;
 
     this.areas.forEach(area => {
       AreaZonesMappings.get(area.areaNumber).forEach(zone => {
-        diagram.getElementById(zone).style.fill = area.isClosed ? '#32db64' : '#f53d3d';
+        const zoneElement = diagram.getElementById(zone);
+          zoneElement.classList
+            .remove(area.isClosed ? 'deactivated-area' : 'activated-area');
+          zoneElement.classList
+            .add(area.isClosed ? 'activated-area' : 'deactivated-area');
+
+          zoneElement.style.fill = area.isClosed ? '#32db64' : '#f53d3d';
+
       });
     });
   }

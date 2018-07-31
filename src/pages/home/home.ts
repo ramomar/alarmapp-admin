@@ -23,6 +23,11 @@ export class HomePage implements OnInit, OnDestroy {
 
   private overviewSegments: string;
 
+  private ctaDisabled: boolean;
+  private ctaColor: string;
+  private ctaIcon: string;
+  private ctaLegend: string;
+
   private alarmService: AlarmService;
 
   constructor(public navCtrl: NavController,
@@ -32,6 +37,10 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.ctaDisabled = true;
+    this.ctaColor = 'primary';
+    this.ctaIcon = 'eye';
+    this.ctaLegend = 'Vigilar';
     this.alarmService.open(message => { this.handleAlarmStateMessage(message) });
     this.alarmService.requestAlarmState()
       .then(console.log)
@@ -49,8 +58,29 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private updateComponentState(alarmState: AlarmStateSummary): void {
+    const systemIsActive = alarmState.systemIsActive;
+
+    this.updateCta(systemIsActive);
+
     this.alarmSummaryCardDeck.updateComponentState(alarmState);
-    this.firstFloorCard.updateComponentState(alarmState.getAreasForFloor(1));
-    this.secondFloorCard.updateComponentState(alarmState.getAreasForFloor(2));
+
+    this.firstFloorCard
+      .updateComponentState(alarmState.getAreasForFloor(1), systemIsActive);
+
+    this.secondFloorCard
+      .updateComponentState(alarmState.getAreasForFloor(2), systemIsActive);
+  }
+
+  private updateCta(systemIsActive: boolean): void {
+    this.ctaDisabled = false;
+    if (systemIsActive) {
+      this.ctaColor = 'danger';
+      this.ctaIcon = 'eye-off';
+      this.ctaLegend = 'Dejar de vigilar';
+    } else {
+      this.ctaColor = 'primary';
+      this.ctaIcon = 'eye';
+      this.ctaLegend = 'Vigilar';
+    }
   }
 }

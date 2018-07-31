@@ -25,25 +25,74 @@
         </alarm-summary-card-deck>
     </section>
     <section [hidden]="overviewSegments != 'firstFloorSegment'">
-      <floor-diagram-card #firstFloorCard
-        cardTitle="Primer piso"
-        diagramHtmlId="firstFloorDiagram"
-        floorDiagramUrl="assets/house_diagrams/floor1_450_275.svg">
+      <floor-diagram-card #firstFloorCard cardTitle="Primer piso">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/"
+             xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+             xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" height="450px" style="zoom: 1;"
+             cursor="default" id="svg_document" width="275px" baseProfile="full" version="1.1"
+             preserveAspectRatio="xMidYMid meet" viewBox="0 0 275 450"><title id="floor1_diagram">
+          floor1</title>
+          <defs id="svg_document_defs"></defs>
+          <g id="main_group"></g>
+          <polyline points="10,30 110,30 110,130 260,130 260,430 10,430 10,30" stroke="#000000"
+                    id="floor1_shape" stroke-width="3px" fill="none" transform=""></polyline>
+          <circle stroke="#000000" id="laundry_bathroom_window" cy="50px" stroke-width="3px"
+                  fill="#ffffff" r="10px" cx="110px" transform=""></circle>
+          <circle stroke="#000000" transform="" id="laundry_door" stroke-width="3px" cy="80px"
+                  fill="#ffffff" r="10px" cx="110px"></circle>
+          <circle stroke="#000000" stroke-width="3px" id="laundry_window" cy="110px" fill="#ffffff"
+                  r="10px" cx="110px" transform=""></circle>
+          <circle stroke="#000000" transform="" stroke-width="3px" id="dinning_room_door" cy="130px"
+                  fill="#ffffff" r="10px" cx="185px"></circle>
+          <circle stroke="#000000" id="dinning_room_window" cy="190px" stroke-width="3px" fill="#ffffff"
+                  r="10px" cx="260px" transform=""></circle>
+          <circle stroke="#000000" id="sitting_room_lateral_window" cy="389px" stroke-width="3px"
+                  fill="#ffffff" r="10px" cx="260px" transform=""></circle>
+          <circle stroke="#000000" transform="" id="sitting_room_movement_sensor" stroke-width="3px"
+                  cy="429px" fill="#ffffff" r="10px" cx="260px"></circle>
+          <circle stroke="#000000" transform="" id="sitting_room_front_window" stroke-width="3px"
+                  cy="429px" fill="#ffffff" r="10px" cx="220px"></circle>
+          <circle stroke="#000000" id="main_door" cy="429px" stroke-width="3px" fill="#ffffff" r="10px"
+                  cx="57px" transform=""></circle>
+        </svg>
+
       </floor-diagram-card>
     </section>
     <section [hidden]="overviewSegments != 'secondFloorSegment'">
-      <floor-diagram-card #secondFloorCard
-        cardTitle="Segundo piso"
-        diagramHtmlId="secondFloorDiagram"
-        floorDiagramUrl="assets/house_diagrams/floor2_450_275.svg">
+      <floor-diagram-card #secondFloorCard cardTitle="Segundo piso">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/"
+             xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+             xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+             xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" baseProfile="full"
+             width="275px" height="450px" viewBox="0 0 275 450" preserveAspectRatio="xMidYMid meet"
+             id="svg_document" style="zoom: 1;"><title id="floor2_diagram">floor2</title>
+          <defs id="svg_document_defs"></defs>
+          <g id="main_group"></g>
+          <polyline points="10,30 130,30 130,80 260,80 260,390 100,390 100,430 10,430 10,30"
+                    stroke="#000000" id="polyline2" stroke-width="3px" fill="none"
+                    transform=""></polyline>
+          <circle stroke="#000000" id="left_bedroom_window" cy="30px" stroke-width="3px" fill="#ffffff"
+                  r="10px" cx="70px" transform=""></circle>
+          <circle stroke="#000000" id="right_bedroom_window" cy="79px" stroke-width="3px" fill="#ffffff"
+                  r="10px" cx="195px" transform=""></circle>
+          <circle stroke="#000000" id="living_room_bathroom_window" cy="170px" stroke-width="3px"
+                  fill="#ffffff" r="10px" cx="260px" transform=""></circle>
+          <circle stroke="#000000" id="living_room_window" cy="300px" stroke-width="3px" fill="#ffffff"
+                  r="10px" cx="260px" transform=""></circle>
+          <circle stroke="#000000" id="main_bedroom_window" cy="390px" stroke-width="3px" fill="#ffffff"
+                  r="10px" cx="181px" transform=""></circle>
+        </svg>
       </floor-diagram-card>
     </section>
   </div>
 </ion-content>
 
 <ion-footer>
-  <button ion-button full icon-start big>
-    <ion-icon name="eye"></ion-icon>
-    <div>Vigilar</div>
+  <button ion-button full icon-start big [color]="ctaColor" [disabled]="ctaDisabled">
+    <ion-icon [name]="ctaIcon"></ion-icon>
+    <div>{{ctaLegend}}</div>
   </button>
 </ion-footer>

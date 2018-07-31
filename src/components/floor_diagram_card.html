@@ -2,14 +2,16 @@
   <ion-card-header>
     {{cardTitle}}
   </ion-card-header>
-  <object #floorDiagram [id]='diagramHtmlId' [data]='safeFloorDiagramUrl' type="image/svg+xml"></object>
+    <section #floorDiagram>
+      <ng-content></ng-content>
+    </section>
   <ion-card-content>
     <ion-spinner name="bubbles" *ngIf="areas.length === 0"></ion-spinner>
   </ion-card-content>
   <div *ngIf="areas.length > 0">
     <ion-row>
       <ion-col align-self-center text-center>
-        <button ion-button icon-start clear small>
+        <button ion-button icon-start clear small [disabled]="ctaDisabled">
           <ion-icon name="eye"></ion-icon>
           <div>Vigilar solo aquí</div>
         </button>
