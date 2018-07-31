@@ -15,7 +15,7 @@ export class AlarmStateSummary {
     return this.areas.filter(z => !z.isClosed).length;
   }
 
-  getClosedZonesCount(): number {
+  getClosedAreasCount(): number {
     return this.areas.filter(z => z.isClosed).length;
   }
 }

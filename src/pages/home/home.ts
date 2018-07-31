@@ -54,7 +54,6 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateViewState(alarmState: AlarmStateSummary): void {
-    console.log(this);
     this.alarmSummaryCardDeck.updateViewState(alarmState);
   }
 }
