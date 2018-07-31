@@ -2,20 +2,25 @@
   <ion-card-header>
     {{cardTitle}}
   </ion-card-header>
-  <object [id]='diagramHtmlId' [data]='safeFloorDiagramUrl' type="image/svg+xml"></object>
+  <object #floorDiagram [id]='diagramHtmlId' [data]='safeFloorDiagramUrl' type="image/svg+xml"></object>
   <ion-card-content>
+    <ion-spinner name="bubbles" *ngIf="areas.length === 0"></ion-spinner>
   </ion-card-content>
-  <ion-row>
-    <ion-col align-self-center text-center>
-      <button ion-button icon-start clear small>
-        <ion-icon name="eye"></ion-icon>
-        <div>Vigilar solo aquí</div>
-      </button>
-    </ion-col>
-    <ion-col align-self-center text-center>
-      <ion-note>
-        <a href="#">{{nonWatchingCount}} zonas abiertas</a>
-      </ion-note>
-    </ion-col>
-  </ion-row>
+  <div *ngIf="areas.length > 0">
+    <ion-row>
+      <ion-col align-self-center text-center>
+        <button ion-button icon-start clear small>
+          <ion-icon name="eye"></ion-icon>
+          <div>Vigilar solo aquí</div>
+        </button>
+      </ion-col>
+      <ion-col align-self-center text-center>
+        <ion-note [ngSwitch]="openAreas">
+          <p class="small-text" *ngSwitchCase="0">Sin areas abiertas</p>
+          <p *ngSwitchCase="1">1 area abierta</p>
+          <p *ngSwitchDefault>{{openAreas}} areas abiertas</p>
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </div>
 </ion-card>

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { SummaryCardIndicator, SummaryCard } from './summary_card';
-import { AlarmStateSummary, AreaSummary, AreaFloorMappings } from '../services/parsing/parsing';
+import { AlarmStateSummary, AreaSummary } from '../services/parsing/parsing';
 
 @Component({
   selector: 'alarm-summary-card-deck',
@@ -21,7 +21,7 @@ export class AlarmSummaryCardDeck {
 
   }
 
- updateViewState(alarmState: AlarmStateSummary): void {
+ updateComponentState(alarmState: AlarmStateSummary): void {
     const generalIndicators = [
       new SummaryCardIndicator(
         'Sistema',
@@ -35,19 +35,19 @@ export class AlarmSummaryCardDeck {
       )
     ];
 
-    const firstFloorIndicators = alarmState.areas
-      .filter(a => AreaFloorMappings.get(a.areaNumber) === 1)
-      .map(this.makeIndicator);
+    const firstFloorIndicators = alarmState
+      .getAreasForFloor(1)
+      .map(AlarmSummaryCardDeck.makeIndicator);
 
-    const secondFloorIndicators = alarmState.areas
-      .filter(a => AreaFloorMappings.get(a.areaNumber) === 2)
-      .map(this.makeIndicator);
+    const secondFloorIndicators = alarmState
+      .getAreasForFloor(2)
+      .map(AlarmSummaryCardDeck.makeIndicator);
 
-    this.generalSummaryCard.updateViewState(generalIndicators);
+    this.generalSummaryCard.updateComponentState(generalIndicators);
 
-    this.firstFloorSummaryCard.updateViewState(firstFloorIndicators);
+    this.firstFloorSummaryCard.updateComponentState(firstFloorIndicators);
 
-    this.secondFloorSummaryCard.updateViewState(secondFloorIndicators);
+    this.secondFloorSummaryCard.updateComponentState(secondFloorIndicators);
   }
 
   private static makeIndicator(areaSummary: AreaSummary): SummaryCardIndicator {

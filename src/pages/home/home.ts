@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { FloorDiagramCard } from '../../components/floor_diagram_card';
 import { AlarmService } from '../../services/AlarmService';
@@ -10,7 +10,7 @@ import { AlarmSummaryCardDeck } from "../../components/alarm_summary_card_deck";
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage implements OnInit, AfterViewInit, OnDestroy {
+export class HomePage implements OnInit, OnDestroy {
 
   @ViewChild('alarmSummaryCardDeck')
   alarmSummaryCardDeck: AlarmSummaryCardDeck;
@@ -32,15 +32,10 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.alarmService.open((message) => { this.handleAlarmStateMessage(message) });
+    this.alarmService.open(message => { this.handleAlarmStateMessage(message) });
     this.alarmService.requestAlarmState()
       .then(console.log)
       .catch(console.log);
-  }
-
-  ngAfterViewInit() {
-    console.log(this.firstFloorCard);
-    console.log(this.secondFloorCard);
   }
 
   ngOnDestroy() {
@@ -50,10 +45,12 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   private handleAlarmStateMessage(message): void {
     const alarmState = parseAlarmStateMessage(message);
 
-    this.updateViewState(alarmState);
+    this.updateComponentState(alarmState);
   }
 
-  private updateViewState(alarmState: AlarmStateSummary): void {
-    this.alarmSummaryCardDeck.updateViewState(alarmState);
+  private updateComponentState(alarmState: AlarmStateSummary): void {
+    this.alarmSummaryCardDeck.updateComponentState(alarmState);
+    this.firstFloorCard.updateComponentState(alarmState.getAreasForFloor(1));
+    this.secondFloorCard.updateComponentState(alarmState.getAreasForFloor(2));
   }
 }

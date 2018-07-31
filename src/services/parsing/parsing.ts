@@ -11,12 +11,8 @@ export class AlarmStateSummary {
     this.systemIsActive = systemIsActive;
   }
 
-  getOpenAreasCount(): number {
-    return this.areas.filter(z => !z.isClosed).length;
-  }
-
-  getClosedAreasCount(): number {
-    return this.areas.filter(z => z.isClosed).length;
+  getAreasForFloor(floorNumber: number): Array<AreaSummary> {
+    return this.areas.filter(a => AreaFloorMappings.get(a.areaNumber) === floorNumber);
   }
 }
 
@@ -35,9 +31,19 @@ export const AreaZonesMappings: Map<number, Array<string>> = new Map([
   [1, ['main_door']],
   [2, ['sitting_room_movement_sensor']],
   [3, ['sitting_room_front_window', 'sitting_room_lateral_window']],
-  [4, ['dinning_room_window', 'dinning_room_door', 'laundry_room_window', 'laundry_room_door']],
+  [4,
+    [
+      'dinning_room_window', 'dinning_room_door', 'laundry_window',
+      'laundry_door', 'laundry_bathroom_window'
+    ]
+  ],
   [5, ['main_bedroom_window']],
-  [6, ['living_room_window', 'living_room_bathroom_window', 'right_bedroom', 'left_bedroom']]
+  [6,
+    [
+      'living_room_window', 'living_room_bathroom_window',
+      'right_bedroom_window', 'left_bedroom_window'
+    ]
+  ]
 ]);
 
 export const AreaFloorMappings: Map<number, number> = new Map([

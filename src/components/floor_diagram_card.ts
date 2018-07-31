@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { AreaSummary, AreaZonesMappings } from "../services/parsing/parsing";
 
 @Component({
   selector: 'floor-diagram-card',
@@ -16,19 +17,36 @@ export class FloorDiagramCard implements OnInit {
   @Input()
   floorDiagramUrl: string;
 
+  @ViewChild('floorDiagram')
+  floorDiagram: ElementRef;
+
   private safeFloorDiagramUrl: SafeResourceUrl;
 
-  private nonWatchingCount: number;
+  private openAreas: number;
+
+  private areas: Array<AreaSummary>;
 
   constructor(private sanitizer: DomSanitizer) {
-
+    this.areas = [];
   }
 
   ngOnInit() {
-    this.nonWatchingCount = 2;
     this.safeFloorDiagramUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.floorDiagramUrl);
   }
 
-  public renderFloorState(t: any): void {
+  ngAfterViewInit() {
+  }
+
+  public updateComponentState(areas: Array<AreaSummary>): void {
+    this.openAreas = areas.filter(a => !a.isClosed).length;
+    this.areas = areas;
+
+    const diagram = this.floorDiagram.nativeElement.contentDocument;
+
+    this.areas.forEach(area => {
+      AreaZonesMappings.get(area.areaNumber).forEach(zone => {
+        diagram.getElementById(zone).style.fill = area.isClosed ? '#32db64' : '#f53d3d';
+      });
+    });
   }
 }

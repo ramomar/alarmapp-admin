@@ -15,7 +15,7 @@ export class SummaryCard {
     this.indicators = [];
   }
 
-  updateViewState(indicators: Array<SummaryCardIndicator>) {
+  updateComponentState(indicators: Array<SummaryCardIndicator>) {
     this.indicators = indicators;
   }
 }
