@@ -19,8 +19,8 @@
       <ion-col align-self-center text-center>
         <ion-note [ngSwitch]="openAreas">
           <p class="small-text" *ngSwitchCase="0">Sin areas abiertas</p>
-          <p *ngSwitchCase="1">1 area abierta</p>
-          <p *ngSwitchDefault>{{openAreas}} areas abiertas</p>
+          <p class="small-text" *ngSwitchCase="1">1 area abierta</p>
+          <p class="small-text" *ngSwitchDefault>{{openAreas}} areas abiertas</p>
         </ion-note>
       </ion-col>
     </ion-row>

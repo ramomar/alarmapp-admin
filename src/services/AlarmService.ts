@@ -39,23 +39,6 @@ export class AlarmService {
     this.eventsSource.close();
   }
 
-  private setOnMessageHandler(onMessageHandler: (message) => void) {
-    this.eventsSource.addEventListener(this.eventPrefix, onMessageHandler, false);
-  }
-
-  private setOnErrorHandler(): void {
-    this.eventsSource.addEventListener('error', (error) => {
-      this.close();
-
-      if (error.readyState === Events.CLOSED) {
-        throw new Error('Connection was closed!');
-      }
-      else {
-        throw new Error('Something bad happened/Could not connect!');
-      }
-    }, false);
-  }
-
   public requestAlarmState() {
     const url = new URL(`v1/devices/events`, this.host);
 
@@ -74,5 +57,22 @@ export class AlarmService {
     };
 
     return retryFetch(url, options, 3);
+  }
+
+  private setOnMessageHandler(onMessageHandler: (message) => void) {
+    this.eventsSource.addEventListener(this.eventPrefix, onMessageHandler, false);
+  }
+
+  private setOnErrorHandler(): void {
+    this.eventsSource.addEventListener('error', (error) => {
+      this.close();
+
+      if (error.readyState === Events.CLOSED) {
+        throw new Error('Connection was closed!');
+      }
+      else {
+        throw new Error('Something bad happened/Could not connect!');
+      }
+    }, false);
   }
 }

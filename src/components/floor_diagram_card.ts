@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { AreaSummary, AreaZonesMappings } from '../services/parsing/parsing';
+import {AlarmStateSummary, AreaSummary, AreaZonesMappings} from '../services/parsing/parsing';
+import { AlarmStateService } from '../services/AlarmStateService';
 
 @Component({
   selector: 'floor-diagram-card',
@@ -10,6 +11,9 @@ export class FloorDiagramCard {
   @Input()
   cardTitle: string;
 
+  @Input()
+  floorNumber: string;
+
   @ViewChild('floorDiagram')
   floorDiagram: ElementRef;
 
@@ -19,14 +23,18 @@ export class FloorDiagramCard {
 
   private areas: Array<AreaSummary>;
 
-  constructor() {
+  constructor(private alarmStateService: AlarmStateService) {
     this.areas = [];
+
+    alarmStateService
+      .alarmStateUpdate$
+      .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
 
-  public updateComponentState(areas: Array<AreaSummary>, systemIsActive: boolean): void {
-    this.ctaDisabled = systemIsActive;
-    this.openAreas = areas.filter(a => !a.isClosed).length;
-    this.areas = areas;
+  public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
+    this.ctaDisabled = alarmStateUpdate.systemIsActive;
+    this.areas = alarmStateUpdate.getAreasForFloor(parseInt(this.floorNumber, 10));
+    this.openAreas = this.areas.filter(a => !a.isClosed).length;
 
     const diagram = this.floorDiagram.nativeElement.firstElementChild;
 

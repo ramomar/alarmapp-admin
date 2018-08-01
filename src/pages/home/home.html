@@ -21,11 +21,20 @@
 <ion-content padding>
   <div [ngSwitch]="overviewSegments">
     <section [hidden]="overviewSegments != 'summarySegment'">
-        <alarm-summary-card-deck #alarmSummaryCardDeck>
-        </alarm-summary-card-deck>
+      <summary-card
+              cardTitle="General">
+      </summary-card>
+      <floor-summary-card
+              cardTitle="Primer piso"
+              floorNumber="1">
+      </floor-summary-card>
+      <floor-summary-card
+              cardTitle="Segundo piso"
+              floorNumber="2">
+      </floor-summary-card>
     </section>
     <section [hidden]="overviewSegments != 'firstFloorSegment'">
-      <floor-diagram-card #firstFloorCard cardTitle="Primer piso">
+      <floor-diagram-card cardTitle="Primer piso" floorNumber="1">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
              xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/"
              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -61,7 +70,7 @@
       </floor-diagram-card>
     </section>
     <section [hidden]="overviewSegments != 'secondFloorSegment'">
-      <floor-diagram-card #secondFloorCard cardTitle="Segundo piso">
+      <floor-diagram-card cardTitle="Segundo piso" floorNumber="2">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
              xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/"
              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

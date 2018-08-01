@@ -11,10 +11,11 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { FloorDiagramCard } from '../components/floor_diagram_card';
 import { SummaryCard } from '../components/summary_card';
-import { AlarmSummaryCardDeck } from '../components/alarm_summary_card_deck';
+import { FloorSummaryCard } from '../components/floor_summary_card';
 import { AlarmService } from '../services/AlarmService';
 
 import Config from '../config.json';
+import { AlarmStateService } from '../services/AlarmStateService';
 
 const alarmServiceFactory = () => {
   return new AlarmService(
@@ -33,7 +34,7 @@ const alarmServiceFactory = () => {
     TabsPage,
     FloorDiagramCard,
     SummaryCard,
-    AlarmSummaryCardDeck
+    FloorSummaryCard
   ],
   imports: [
     BrowserModule,
@@ -50,7 +51,8 @@ const alarmServiceFactory = () => {
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    { provide: AlarmService, useFactory: alarmServiceFactory }
+    { provide: AlarmService, useFactory: alarmServiceFactory },
+    AlarmStateService
   ]
 })
 export class AppModule {}

@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { AlarmStateSummary } from '../services/parsing/parsing';
+import { AlarmStateService } from '../services/AlarmStateService';
 
 @Component({
   selector: 'summary-card',
@@ -11,12 +13,27 @@ export class SummaryCard {
 
   private indicators: Array<SummaryCardIndicator>;
 
-  constructor() {
+  constructor(private alarmStateService: AlarmStateService) {
     this.indicators = [];
+
+    this.alarmStateService
+      .alarmStateUpdate$
+      .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
 
-  updateComponentState(indicators: Array<SummaryCardIndicator>) {
-    this.indicators = indicators;
+  private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {
+    this.indicators = [
+      new SummaryCardIndicator(
+        'Sistema',
+        alarmStateSummary.systemIsActive ? 'Activado' : 'Desactivado',
+        alarmStateSummary.systemIsActive ? 'danger' : 'light'
+      ),
+      new SummaryCardIndicator(
+        'Sirena',
+        alarmStateSummary.sirenIsActive ? 'Encendida' : 'Apagada',
+        alarmStateSummary.sirenIsActive ? 'danger': 'light'
+      )
+    ];
   }
 }
 

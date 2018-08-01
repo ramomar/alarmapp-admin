@@ -1,25 +1,15 @@
-import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { FloorDiagramCard } from '../../components/floor_diagram_card';
 import { AlarmService } from '../../services/AlarmService';
 import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
 import { AlarmStateSummary } from "../../services/parsing/parsing";
-import { AlarmSummaryCardDeck } from "../../components/alarm_summary_card_deck";
+import { AlarmStateService } from '../../services/AlarmStateService';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit, OnDestroy {
-
-  @ViewChild('alarmSummaryCardDeck')
-  alarmSummaryCardDeck: AlarmSummaryCardDeck;
-
-  @ViewChild('firstFloorCard')
-  firstFloorCard: FloorDiagramCard;
-
-  @ViewChild('secondFloorCard')
-  secondFloorCard: FloorDiagramCard;
 
   private overviewSegments: string;
 
@@ -28,51 +18,51 @@ export class HomePage implements OnInit, OnDestroy {
   private ctaIcon: string;
   private ctaLegend: string;
 
-  private alarmService: AlarmService;
-
   constructor(public navCtrl: NavController,
-              alarmService: AlarmService) {
+              private alarmService: AlarmService,
+              private alarmStateService: AlarmStateService) {
     this.overviewSegments = 'summarySegment';
+
     this.alarmService = alarmService;
+
+    this.ctaDisabled = true;
+
+    this.ctaColor = 'primary';
+
+    this.ctaIcon = 'eye';
+
+    this.ctaLegend = 'Vigilar';
+
+    alarmStateService
+      .alarmStateUpdate$
+      .subscribe(update => { this.handleAlarmStateUpdate(update) });
+
+    this.alarmService
+      .open(message => { this.handleAlarmStateMessage(message) });
   }
 
-  ngOnInit() {
-    this.ctaDisabled = true;
-    this.ctaColor = 'primary';
-    this.ctaIcon = 'eye';
-    this.ctaLegend = 'Vigilar';
-    this.alarmService.open(message => { this.handleAlarmStateMessage(message) });
-    this.alarmService.requestAlarmState()
+  ngOnInit(): void {
+    this.alarmService
+      .requestAlarmState()
       .then(console.log)
       .catch(console.log);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.alarmService.close();
   }
 
   private handleAlarmStateMessage(message): void {
     const alarmState = parseAlarmStateMessage(message);
 
-    this.updateComponentState(alarmState);
+    this.alarmStateService.notifyAlarmStateUpdate(alarmState);
   }
 
-  private updateComponentState(alarmState: AlarmStateSummary): void {
+  private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
     const systemIsActive = alarmState.systemIsActive;
 
-    this.updateCta(systemIsActive);
-
-    this.alarmSummaryCardDeck.updateComponentState(alarmState);
-
-    this.firstFloorCard
-      .updateComponentState(alarmState.getAreasForFloor(1), systemIsActive);
-
-    this.secondFloorCard
-      .updateComponentState(alarmState.getAreasForFloor(2), systemIsActive);
-  }
-
-  private updateCta(systemIsActive: boolean): void {
     this.ctaDisabled = false;
+
     if (systemIsActive) {
       this.ctaColor = 'danger';
       this.ctaIcon = 'eye-off';
