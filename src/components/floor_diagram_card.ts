@@ -1,12 +1,14 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import {AlarmStateSummary, AreaSummary, AreaZonesMappings} from '../services/parsing/parsing';
-import { AlarmStateService } from '../services/AlarmStateService';
+import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
+
+import { ZoneAreaMappings } from '../services/parsing/parsing';
 
 @Component({
   selector: 'floor-diagram-card',
   templateUrl: './floor_diagram_card.html'
 })
-export class FloorDiagramCard {
+export class FloorDiagramCard implements OnInit {
 
   @Input()
   cardTitle: string;
@@ -19,36 +21,89 @@ export class FloorDiagramCard {
 
   private ctaDisabled: boolean;
 
-  private openAreas: number;
+  private hasAreas: boolean;
 
-  private areas: Array<AreaSummary>;
+  private disabledAreas: Set<number>;
 
-  constructor(private alarmStateService: AlarmStateService) {
-    this.areas = [];
+  private diagram;
 
-    alarmStateService
+  private openAreasCount: number;
+
+  private disabledAreasCount: number;
+
+  constructor(private alarmStateUpdatesService: AlarmStateUpdatesService) {
+    this.hasAreas = false;
+
+    this.disabledAreas = new Set<number>();
+
+    alarmStateUpdatesService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
 
+  ngOnInit() {
+    this.diagram = this.floorDiagram.nativeElement.firstElementChild;
+  }
+
   public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
+    this.hasAreas = true;
+
     this.ctaDisabled = alarmStateUpdate.systemIsActive;
-    this.areas = alarmStateUpdate.getAreasForFloor(parseInt(this.floorNumber, 10));
-    this.openAreas = this.areas.filter(a => !a.isClosed).length;
 
-    const diagram = this.floorDiagram.nativeElement.firstElementChild;
+    const areas = alarmStateUpdate.getAreasForFloor(parseInt(this.floorNumber, 10));
 
-    this.areas.forEach(area => {
-      AreaZonesMappings.get(area.areaNumber).forEach(zone => {
-        const zoneElement = diagram.getElementById(zone);
-          zoneElement.classList
-            .remove(area.isClosed ? 'deactivated-area' : 'activated-area');
-          zoneElement.classList
-            .add(area.isClosed ? 'activated-area' : 'deactivated-area');
+    this.openAreasCount = areas.filter(a => !a.isClosed).length;
 
-          zoneElement.style.fill = area.isClosed ? '#32db64' : '#f53d3d';
+    this.disabledAreasCount = areas.filter(a => a.isDisabled).length;
 
-      });
+    areas.forEach(area => {
+      if (!area.isDisabled) {
+        this.disabledAreas.delete(area.areaNumber);
+      } else {
+        this.disabledAreas.add(area.areaNumber);
+      }
+    });
+
+    areas.forEach(area => { this.fillStroke(area) });
+  }
+
+  private enableOrDisableArea(event): void {
+    const zone = event.target.id;
+
+    if (this.hasAreas && ZoneAreaMappings.has(zone)) {
+      const areaNumber = ZoneAreaMappings.get(zone);
+
+      if (this.disabledAreas.has(areaNumber)) {
+        this.disabledAreas.delete(areaNumber);
+        this.fillArea(areaNumber, 'white');
+      } else {
+        this.disabledAreas.add(areaNumber);
+        this.fillArea(areaNumber, 'silver');
+      }
+    }
+
+    this.disabledAreasCount = this.disabledAreas.size;
+  }
+
+  private fillStroke(area: AreaSummary): void {
+    AreaZonesMappings.get(area.areaNumber).forEach(zone => {
+      const zoneElement = this.diagram.getElementById(zone);
+
+      if (this.disabledAreas.has(area.areaNumber)) {
+        zoneElement.style.fill = 'silver';
+      } else {
+        zoneElement.style.fill = 'white';
+      }
+
+      zoneElement.style.stroke = area.isClosed ? '#32db64' : '#f53d3d';
+    });
+  }
+
+  private fillArea(areaNumber: number, color: string) {
+    AreaZonesMappings.get(areaNumber).forEach(zone => {
+      const zoneElement = this.diagram.getElementById(zone);
+
+      zoneElement.style.fill = color;
     });
   }
 }

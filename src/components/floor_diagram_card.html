@@ -2,26 +2,39 @@
   <ion-card-header>
     {{cardTitle}}
   </ion-card-header>
-    <section #floorDiagram>
+    <section (click)="enableOrDisableArea($event)" #floorDiagram>
       <ng-content></ng-content>
     </section>
   <ion-card-content>
-    <ion-spinner name="bubbles" *ngIf="areas.length === 0"></ion-spinner>
+    <ion-spinner name="bubbles" *ngIf="!hasAreas"></ion-spinner>
   </ion-card-content>
-  <div *ngIf="areas.length > 0">
+  <div *ngIf="hasAreas">
     <ion-row>
+      <ion-col align-self-center text-center>
+        <ion-note [ngSwitch]="disabledAreasCount">
+          <p class="small-text" *ngSwitchCase="0">Sin areas deshabilitadas</p>
+          <p class="small-text" *ngSwitchCase="1">1 area deshabilitada</p>
+          <p class="small-text" *ngSwitchDefault>{{disabledAreasCount}} areas deshabilitadas</p>
+        </ion-note>
+      </ion-col>
+      <ion-col align-self-center text-center>
+        <ion-note [ngSwitch]="openAreasCount">
+          <p class="small-text" *ngSwitchCase="0">Sin areas abiertas</p>
+          <p class="small-text" *ngSwitchCase="1">1 area abierta</p>
+          <p class="small-text" *ngSwitchDefault>{{openAreasCount}} areas abiertas</p>
+        </ion-note>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+      </ion-col>
       <ion-col align-self-center text-center>
         <button ion-button icon-start clear small [disabled]="ctaDisabled">
           <ion-icon name="eye"></ion-icon>
           <div>Vigilar solo aquí</div>
         </button>
       </ion-col>
-      <ion-col align-self-center text-center>
-        <ion-note [ngSwitch]="openAreas">
-          <p class="small-text" *ngSwitchCase="0">Sin areas abiertas</p>
-          <p class="small-text" *ngSwitchCase="1">1 area abierta</p>
-          <p class="small-text" *ngSwitchDefault>{{openAreas}} areas abiertas</p>
-        </ion-note>
+      <ion-col>
       </ion-col>
     </ion-row>
   </div>

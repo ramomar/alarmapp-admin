@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { AlarmStateSummary } from './parsing/parsing';
 
 @Injectable()
-export class AlarmStateService {
+export class AlarmStateUpdatesService {
 
   private alarmStateUpdateSource: Subject<AlarmStateSummary>;
 

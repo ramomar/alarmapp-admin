@@ -15,7 +15,7 @@ import { FloorSummaryCard } from '../components/floor_summary_card';
 import { AlarmService } from '../services/AlarmService';
 
 import Config from '../config.json';
-import { AlarmStateService } from '../services/AlarmStateService';
+import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
 
 const alarmServiceFactory = () => {
   return new AlarmService(
@@ -52,7 +52,7 @@ const alarmServiceFactory = () => {
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     { provide: AlarmService, useFactory: alarmServiceFactory },
-    AlarmStateService
+    AlarmStateUpdatesService
   ]
 })
 export class AppModule {}

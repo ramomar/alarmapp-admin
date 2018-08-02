@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { AlarmService } from '../../services/AlarmService';
 import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
 import { AlarmStateSummary } from "../../services/parsing/parsing";
-import { AlarmStateService } from '../../services/AlarmStateService';
+import { AlarmStateUpdatesService } from '../../services/AlarmStateUpdatesService';
 
 @Component({
   selector: 'page-home',
@@ -20,7 +20,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(public navCtrl: NavController,
               private alarmService: AlarmService,
-              private alarmStateService: AlarmStateService) {
+              private alarmStateUpdatesService: AlarmStateUpdatesService) {
     this.overviewSegments = 'summarySegment';
 
     this.alarmService = alarmService;
@@ -33,7 +33,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.ctaLegend = 'Vigilar';
 
-    alarmStateService
+    alarmStateUpdatesService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
@@ -55,7 +55,7 @@ export class HomePage implements OnInit, OnDestroy {
   private handleAlarmStateMessage(message): void {
     const alarmState = parseAlarmStateMessage(message);
 
-    this.alarmStateService.notifyAlarmStateUpdate(alarmState);
+    this.alarmStateUpdatesService.notifyAlarmStateUpdate(alarmState);
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {

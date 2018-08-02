@@ -16,13 +16,7 @@ floor-diagram-card {
     font-size: 1.3rem;
   }
 
-  .activated-area {
+  .area-animation {
     transition: 1s;
-    fill: secondary;
-  }
-
-  .deactivated-area {
-    transition: 1s;
-    fill: danger;
   }
 }

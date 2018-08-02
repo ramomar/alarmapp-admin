@@ -16,8 +16,11 @@ export class AlarmService {
               eventPrefix: string = 'alarmState',
               deviceId: string) {
     this.host = host;
+
     this.accessToken = accessToken;
+
     this.eventPrefix = eventPrefix;
+
     this.deviceId = deviceId;
   }
 
@@ -30,8 +33,11 @@ export class AlarmService {
       this.eventPrefix
     ].join('/');
     const url = new URL(`${path}?access_token=${this.accessToken}`, this.host);
+
     this.eventsSource = new Events(url.href);
+
     this.setOnMessageHandler(onMessageHandler);
+
     this.setOnErrorHandler();
   }
 

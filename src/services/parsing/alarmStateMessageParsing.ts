@@ -1,7 +1,7 @@
 import { AlarmStateSummary, AreaSummary } from './parsing';
 
 function toAreaSummary(string, index): AreaSummary {
-  return new AreaSummary(index+1, string.includes('1'));
+  return new AreaSummary(index+1, string.includes('1'), string.includes('d'));
 }
 
 export function parseAlarmStateMessage(message): AlarmStateSummary {

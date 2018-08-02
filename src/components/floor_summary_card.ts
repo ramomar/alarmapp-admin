@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AlarmStateService } from '../services/AlarmStateService';
+import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
 import { AlarmStateSummary, AreaSummary } from '../services/parsing/parsing';
 
 @Component({
@@ -16,12 +16,12 @@ export class FloorSummaryCard {
 
   private indicators: Array<FloorSummaryCardIndicator>;
 
-  constructor(private alarmStateService: AlarmStateService) {
+  constructor(private alarmStateUpdatesService: AlarmStateUpdatesService) {
     this.indicators = [];
 
-    this.alarmStateService = alarmStateService;
+    this.alarmStateUpdatesService = alarmStateUpdatesService;
 
-    this.alarmStateService
+    this.alarmStateUpdatesService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
