@@ -68,7 +68,7 @@ export class FloorDiagramCard implements OnInit {
   }
 
   private enableOrDisableArea(event): void {
-    const zone = event.target.id;
+    const zone = event.target.getAttribute('data-area-name');
 
     if (this.hasAreas && ZoneAreaMappings.has(zone)) {
       const areaNumber = ZoneAreaMappings.get(zone);
@@ -87,7 +87,7 @@ export class FloorDiagramCard implements OnInit {
 
   private fillStroke(area: AreaSummary): void {
     AreaZonesMappings.get(area.areaNumber).forEach(zone => {
-      const zoneElement = this.diagram.getElementById(zone);
+      const zoneElement = this.diagram.querySelector(`[data-area-name=${zone}]`);
 
       if (this.disabledAreas.has(area.areaNumber)) {
         zoneElement.style.fill = 'silver';
@@ -101,7 +101,7 @@ export class FloorDiagramCard implements OnInit {
 
   private fillArea(areaNumber: number, color: string) {
     AreaZonesMappings.get(areaNumber).forEach(zone => {
-      const zoneElement = this.diagram.getElementById(zone);
+      const zoneElement = this.diagram.querySelector(`[data-area-name=${zone}]`);
 
       zoneElement.style.fill = color;
     });
