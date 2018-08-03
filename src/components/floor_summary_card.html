@@ -5,7 +5,9 @@
     <ion-card-content>
         <ion-item *ngFor="let indicator of indicators">
             {{indicator.title}}
-            <ion-badge item-end color="{{indicator.color}}">{{indicator.content}}</ion-badge>
+            <ion-badge data-indicator-id="{indicator.id}" item-end [color]="indicator.color">
+                {{indicator.content}}
+            </ion-badge>
         </ion-item>
         <div *ngIf="indicators.length === 0">
             <ion-spinner name="bubbles"></ion-spinner>

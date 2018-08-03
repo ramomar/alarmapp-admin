@@ -14,19 +14,19 @@ export class AlarmStateSummary {
   }
 
   getAreasForFloor(floorNumber: number): Array<AreaSummary> {
-    return this.areas.filter(a => AreaFloorMappings.get(a.areaNumber) === floorNumber);
+    return this.areas.filter(a => AreaFloorMappings.get(a.number) === floorNumber);
   }
 }
 
 export class AreaSummary {
-  readonly areaNumber: number;
+  readonly number: number;
   readonly isClosed: boolean;
   readonly isDisabled: boolean;
 
-  constructor(areaNumber: number,
+  constructor(number: number,
               isClosed: boolean,
               isDisabled: boolean) {
-    this.areaNumber = areaNumber;
+    this.number = number;
 
     this.isClosed = isClosed;
 

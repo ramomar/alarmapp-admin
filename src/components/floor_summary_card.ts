@@ -34,9 +34,10 @@ export class FloorSummaryCard {
 
   private static makeIndicator(areaSummary: AreaSummary): FloorSummaryCardIndicator {
     return new FloorSummaryCardIndicator(
-      `Zona ${areaSummary.areaNumber}`,
+      `Zona ${areaSummary.number}`,
       areaSummary.isClosed ? 'Cerrada' : 'Abierta',
-      areaSummary.isClosed ? 'secondary' : 'danger'
+      areaSummary.isClosed ? 'secondary' : 'danger',
+      areaSummary.number.toLocaleString()
     );
   }
 }
@@ -45,12 +46,15 @@ export class FloorSummaryCardIndicator {
   readonly title: string;
   readonly content: string;
   readonly color: string;
+  readonly id: string;
 
   constructor(title: string,
               content: string,
-              color: string) {
+              color: string,
+              id: string) {
     this.title = title;
     this.content = content;
     this.color = color;
+    this.id = id;
   }
 }
