@@ -2,7 +2,7 @@
   <ion-card-header>
     {{cardTitle}}
   </ion-card-header>
-    <section (click)="enableOrDisableArea($event)" #floorDiagram>
+    <section (click)="handleEnableOrDisableAreaButtonClick($event)" #floorDiagram>
       <ng-content></ng-content>
     </section>
   <ion-card-content>
