@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { AlarmService } from '../../services/AlarmService';
+import { ParticleCloudService } from '../../services/ParticleCloudService';
 import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
 import { AlarmStateSummary } from "../../services/parsing/parsing";
 import { AlarmStateUpdatesService } from '../../services/AlarmStateUpdatesService';
@@ -19,11 +19,11 @@ export class HomePage implements OnInit, OnDestroy {
   private ctaLegend: string;
 
   constructor(public navCtrl: NavController,
-              private alarmService: AlarmService,
+              private particleCloudService: ParticleCloudService,
               private alarmStateUpdatesService: AlarmStateUpdatesService) {
     this.overviewSegments = 'summarySegment';
 
-    this.alarmService = alarmService;
+    this.particleCloudService = particleCloudService;
 
     this.ctaDisabled = true;
 
@@ -37,19 +37,20 @@ export class HomePage implements OnInit, OnDestroy {
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
-    this.alarmService
+    this
+      .particleCloudService
       .open(message => { this.handleAlarmStateMessage(message) });
   }
 
   ngOnInit(): void {
-    this.alarmService
+    this.particleCloudService
       .requestAlarmState()
       .then(console.log)
       .catch(console.log);
   }
 
   ngOnDestroy(): void {
-    this.alarmService.close();
+    this.particleCloudService.close();
   }
 
   private handleAlarmStateMessage(message): void {

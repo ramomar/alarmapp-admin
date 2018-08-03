@@ -4,7 +4,7 @@ import { retryFetch } from '../utils/retryFetch.js';
 const Events = window['EventSource'];
 
 @Injectable()
-export class AlarmService {
+export class ParticleCloudService {
   private eventsSource;
   private host: string;
   private accessToken: string;
