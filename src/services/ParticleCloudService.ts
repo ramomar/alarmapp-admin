@@ -5,10 +5,15 @@ const Events = window['EventSource'];
 
 @Injectable()
 export class ParticleCloudService {
+
   private eventsSource;
+
   private host: string;
+
   private accessToken: string;
+
   private eventPrefix: string;
+
   private deviceId: string;
 
   constructor(host: string,
