@@ -1,0 +1,9 @@
+<ion-item>
+  {{title}}
+  <button ion-button small outline item-right icon-end
+    [color]="color"
+    (click)="handleEnableOrDisableAreaIndicatorTap()">
+      {{content}}
+      <ion-icon [name]="iconName"></ion-icon>
+  </button>
+</ion-item>

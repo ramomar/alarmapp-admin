@@ -7,9 +7,9 @@ import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
 
 import { ZoneAreaMappings } from '../services/parsing/parsing';
 import {
-  AlarmAvailabilityService,
+  AreaAvailabilityService,
   AreaAvailabilityUpdate
-} from '../services/AlarmAvailabilityService';
+} from '../services/AreaAvailabilityService';
 
 @Component({
   selector: 'floor-diagram-card',
@@ -39,20 +39,21 @@ export class FloorDiagramCard implements OnInit {
   private disabledAreasCount: number;
 
   constructor(private alarmStateUpdatesService: AlarmStateUpdatesService,
-              private alarmAvailabilityService: AlarmAvailabilityService) {
+              private areaAvailabilityService: AreaAvailabilityService) {
     this.hasAreas = false;
 
     alarmStateUpdatesService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
-    this.alarmAvailabilityService
+    this.areaAvailabilityService
       .availabilityUpdate$
       .subscribe(update => { this.handleAvailabilityUpdate(update) });
   }
 
   ngOnInit() {
     this.floorNumber = parseInt(this.floorNumberInput, 10);
+
     this.diagram = this.floorDiagram.nativeElement.firstElementChild;
   }
 
@@ -69,9 +70,9 @@ export class FloorDiagramCard implements OnInit {
 
     areas.forEach(area => {
       if (!area.isDisabled) {
-        this.alarmAvailabilityService.enableArea(area.number);
+        this.areaAvailabilityService.enableArea(area.number);
       } else {
-        this.alarmAvailabilityService.disableArea(area.number);
+        this.areaAvailabilityService.disableArea(area.number);
       }
     });
 
@@ -90,7 +91,7 @@ export class FloorDiagramCard implements OnInit {
 
   private handleAvailabilityUpdate(areaAvailabilityUpdate: AreaAvailabilityUpdate): void {
     if (AreaFloorMappings.get(areaAvailabilityUpdate.area) === this.floorNumber) {
-      if (areaAvailabilityUpdate.disable) {
+      if (areaAvailabilityUpdate.disabled) {
         this.fillArea(areaAvailabilityUpdate.area, 'silver');
       } else {
         this.fillArea(areaAvailabilityUpdate.area, 'white');
@@ -99,13 +100,13 @@ export class FloorDiagramCard implements OnInit {
   }
 
   private enableOrDisableArea(area: number): void {
-    if (this.alarmAvailabilityService.isDisabled(area)) {
-      this.alarmAvailabilityService.enableArea(area);
+    if (this.areaAvailabilityService.isDisabled(area)) {
+      this.areaAvailabilityService.enableArea(area);
     } else {
-      this.alarmAvailabilityService.disableArea(area);
+      this.areaAvailabilityService.disableArea(area);
     }
 
-    this.disabledAreasCount = this.alarmAvailabilityService
+    this.disabledAreasCount = this.areaAvailabilityService
       .disabledAreasCountForFloor(this.floorNumber);
   }
 
@@ -113,7 +114,7 @@ export class FloorDiagramCard implements OnInit {
     AreaZonesMappings.get(area.number).forEach(zone => {
       const zoneElement = this.diagram.querySelector(`[data-area-name=${zone}]`);
 
-      if (this.alarmAvailabilityService.isDisabled(area.number)) {
+      if (this.areaAvailabilityService.isDisabled(area.number)) {
         zoneElement.style.fill = 'silver';
       } else {
         zoneElement.style.fill = 'white';

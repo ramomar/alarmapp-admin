@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { AreaFloorMappings } from './parsing/parsing';
 
 @Injectable()
-export class AlarmAvailabilityService {
+export class AreaAvailabilityService {
 
   private disabledAreas: Set<number>;
 
@@ -46,10 +46,10 @@ export class AlarmAvailabilityService {
 
 export class AreaAvailabilityUpdate {
   readonly area: number;
-  readonly disable: boolean;
+  readonly disabled: boolean;
 
   constructor(area: number, isDisabled: boolean) {
     this.area = area;
-    this.disable = isDisabled;
+    this.disabled = isDisabled;
   }
 }
