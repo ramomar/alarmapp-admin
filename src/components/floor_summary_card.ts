@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   AlarmStateService,
   AlarmStateSummary,
@@ -9,13 +9,19 @@ import {
   selector: 'floor-summary-card',
   templateUrl: './floor_summary_card.html'
 })
-export class FloorSummaryCard {
+export class FloorSummaryCard implements OnInit {
 
   @Input()
   cardTitle: string;
 
   @Input()
-  floorNumber: string;
+  floorNumberString: string;
+
+  private floorNumber: number;
+
+  private openAreasCount: number;
+
+  private disabledAreasCount: number;
 
   private areaSummaries: Array<AreaSummary>;
 
@@ -23,13 +29,32 @@ export class FloorSummaryCard {
     this.areaSummaries = [];
 
     this.alarmStateService = alarmStateService;
+  }
+
+  ngOnInit(): void {
+    this.floorNumber = parseInt(this.floorNumberString, 10);
 
     this.alarmStateService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
+
+    this.alarmStateService
+      .availabilityUpdate$
+      .subscribe(update => { this.updateDisabledAreasCount(); });
   }
 
   private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {
-    this.areaSummaries = alarmStateSummary.getAreasForFloor(parseInt(this.floorNumber, 10));
+    const areas = alarmStateSummary.getAreasForFloor(this.floorNumber);
+
+    this.openAreasCount = areas.filter(a => !a.isClosed).length;
+
+    this.updateDisabledAreasCount();
+
+    this.areaSummaries = areas;
+  }
+
+  private updateDisabledAreasCount(): void {
+    this.disabledAreasCount = this.alarmStateService
+      .getDisabledAreasCountForFloor(this.floorNumber);
   }
 }

@@ -57,7 +57,7 @@ export class AlarmStateService {
     return this.disabledAreas.has(area);
   }
 
-  public disabledAreasCountForFloor(floor: number): number {
+  public getDisabledAreasCountForFloor(floor: number): number {
     let count = 0;
 
     this.disabledAreas.forEach(area => {

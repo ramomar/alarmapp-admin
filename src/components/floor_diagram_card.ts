@@ -107,7 +107,7 @@ export class FloorDiagramCard implements OnInit {
       this.alarmStateService.disableArea(area);
     }
 
-    this.disabledAreasCount = this.alarmStateService.disabledAreasCountForFloor(this.floorNumber);
+    this.disabledAreasCount = this.alarmStateService.getDisabledAreasCountForFloor(this.floorNumber);
   }
 
   private fillStroke(area: AreaSummary): void {

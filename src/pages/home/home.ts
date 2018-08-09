@@ -30,8 +30,6 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.isLoading = true;
 
-    this.enableOrDisableSystemButtonColor = 'primary';
-
     this.enableOrDisableSystemButtonIcon = 'eye';
 
     this.enableOrDisableSystemButtonText = 'Vigilar';

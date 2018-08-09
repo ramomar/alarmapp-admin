@@ -7,6 +7,22 @@
      <floor-summary-card-indicator [areaSummary]="area">
      </floor-summary-card-indicator>
   </ng-container>
+    <ion-row *ngIf="areaSummaries.length > 0">
+      <ion-col align-self-center text-center>
+        <ion-note [ngSwitch]="disabledAreasCount">
+          <p class="small-text" *ngSwitchCase="0">Sin areas deshabilitadas</p>
+          <p class="small-text" *ngSwitchCase="1">1 area deshabilitada</p>
+          <p class="small-text" *ngSwitchDefault>{{disabledAreasCount}} areas deshabilitadas</p>
+        </ion-note>
+      </ion-col>
+      <ion-col align-self-center text-center>
+        <ion-note [ngSwitch]="openAreasCount">
+          <p class="small-text" *ngSwitchCase="0">Sin areas abiertas</p>
+          <p class="small-text" *ngSwitchCase="1">1 area abierta</p>
+          <p class="small-text" *ngSwitchDefault>{{openAreasCount}} areas abiertas</p>
+        </ion-note>
+      </ion-col>
+     </ion-row>
   <div *ngIf="areaSummaries.length === 0">
     <ion-spinner name="bubbles"></ion-spinner>
   </div>
