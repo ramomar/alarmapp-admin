@@ -1,10 +1,14 @@
 <ion-item>
   {{title}}
-  <button ion-button small outline item-right icon-end
-    (click)="handleEnableOrDisableAreaIndicatorTap()"
-    [disabled]="isSystemActive"
-    [color]="color">
+  <div float-right>
+    <ion-badge [color]="color">
       {{content}}
+    </ion-badge>
+  </div>
+  <button ion-button small outline item-right icon-only
+          (click)="handleEnableOrDisableAreaIndicatorTap()"
+          [disabled]="isSystemActive"
+          color="primary">
       <ion-icon [name]="iconName"></ion-icon>
   </button>
 </ion-item>

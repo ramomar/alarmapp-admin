@@ -23,6 +23,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private enableOrDisableSystemButtonText: string;
 
+  private enableOrDisableSystemButtonColor: string;
+
   constructor(public navCtrl: NavController,
               private particleCloudService: ParticleCloudService,
               private alarmStateService: AlarmStateService) {
@@ -31,6 +33,8 @@ export class HomePage implements OnInit, OnDestroy {
     this.isLoading = true;
 
     this.enableOrDisableSystemButtonIcon = 'eye';
+
+    this.enableOrDisableSystemButtonColor = 'primary';
 
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
@@ -75,9 +79,11 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.isSystemActive) {
       this.enableOrDisableSystemButtonIcon = 'eye-off';
       this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
+      this.enableOrDisableSystemButtonColor = 'danger';
     } else {
       this.enableOrDisableSystemButtonIcon = 'eye';
       this.enableOrDisableSystemButtonText = 'Vigilar';
+      this.enableOrDisableSystemButtonColor = 'primary';
     }
   }
 }

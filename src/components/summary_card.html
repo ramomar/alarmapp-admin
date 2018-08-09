@@ -3,10 +3,17 @@
     {{cardTitle}}
   </ion-card-header>
   <ion-card-content>
-    <ion-item *ngFor="let indicator of indicators">
-      {{indicator.title}}
-      <ion-badge item-end color="{{indicator.color}}">{{indicator.content}}</ion-badge>
-    </ion-item>
+    <div *ngIf="indicators.length > 0">
+      <ion-item *ngFor="let indicator of indicators">
+        {{indicator.title}}
+        <ion-badge item-end color="{{indicator.color}}">{{indicator.content}}</ion-badge>
+      </ion-item>
+      <button ion-button outline icon-start block small
+        color="danger">
+        <ion-icon name="megaphone"></ion-icon>
+        Emergencia
+      </button>
+    </div>
     <div *ngIf="indicators.length === 0">
       <ion-spinner name="bubbles"></ion-spinner>
     </div>

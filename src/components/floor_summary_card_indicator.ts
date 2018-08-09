@@ -37,7 +37,7 @@ export class FloorSummaryCardIndicator implements OnInit {
 
   ngOnInit(): void {
     this.title = `Area ${this.areaSummary.number}`;
-    this.content = this.areaSummary.isDisabled ? 'Habilitar': 'Deshabilitar';
+    this.content = this.areaSummary.isClosed ? 'Cerrada': 'Abierta';
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
     this.area = this.areaSummary.number;
@@ -56,10 +56,8 @@ export class FloorSummaryCardIndicator implements OnInit {
 
   private handleAvailabilityUpdate(update: AreaAvailabilityUpdate): void {
     if (this.iconName === 'eye-off') {
-      this.content = 'Habilitar';
       this.iconName = 'eye';
     } else {
-      this.content = 'Deshabilitar';
       this.iconName = 'eye-off';
     }
   }
