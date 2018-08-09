@@ -30,7 +30,7 @@ export class FloorDiagramCard implements OnInit {
 
   private isLoading: boolean;
 
-  private systemIsActive: boolean;
+  private isSystemActive: boolean;
 
   private diagram;
 
@@ -42,12 +42,16 @@ export class FloorDiagramCard implements OnInit {
     this.isLoading = true;
 
     this.alarmStateService
+      .systemStateUpdate$
+      .subscribe(isActive => { this.isSystemActive = isActive; });
+
+    this.alarmStateService
       .alarmStateUpdate$
-      .subscribe(update => { this.handleAlarmStateUpdate(update) });
+      .subscribe(update => { this.handleAlarmStateUpdate(update); });
 
     this.alarmStateService
       .availabilityUpdate$
-      .subscribe(update => { this.handleAvailabilityUpdate(update) });
+      .subscribe(update => { this.handleAvailabilityUpdate(update); });
   }
 
   ngOnInit() {
@@ -58,8 +62,6 @@ export class FloorDiagramCard implements OnInit {
 
   public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
     this.isLoading = false;
-
-    this.systemIsActive = alarmStateUpdate.systemIsActive;
 
     const areas = alarmStateUpdate.getAreasForFloor(this.floorNumber);
 
@@ -81,7 +83,7 @@ export class FloorDiagramCard implements OnInit {
   private handleEnableOrDisableAreaButtonClick(event): void {
     const zone = event.target.getAttribute('data-area-name');
 
-    if (!this.isLoading && !this.systemIsActive && ZoneAreaMappings.has(zone)) {
+    if (!this.isLoading && !this.isSystemActive && ZoneAreaMappings.has(zone)) {
       const area = ZoneAreaMappings.get(zone);
 
       this.enableOrDisableArea(area);
@@ -90,7 +92,7 @@ export class FloorDiagramCard implements OnInit {
 
   private handleAvailabilityUpdate(areaAvailabilityUpdate: AreaAvailabilityUpdate): void {
     if (AreaFloorMappings.get(areaAvailabilityUpdate.area) === this.floorNumber) {
-      if (areaAvailabilityUpdate.disabled) {
+      if (areaAvailabilityUpdate.isDisabled) {
         this.fillArea(areaAvailabilityUpdate.area, 'silver');
       } else {
         this.fillArea(areaAvailabilityUpdate.area, 'white');

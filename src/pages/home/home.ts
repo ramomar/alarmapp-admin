@@ -17,6 +17,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private isLoading: boolean;
 
+  private isSystemActive: boolean;
+
   private enableOrDisableSystemButtonColor: string;
 
   private enableOrDisableSystemButtonIcon: string;
@@ -28,8 +30,6 @@ export class HomePage implements OnInit, OnDestroy {
               private alarmStateService: AlarmStateService) {
     this.overviewSegments = 'summarySegment';
 
-    this.particleCloudService = particleCloudService;
-
     this.isLoading = true;
 
     this.enableOrDisableSystemButtonColor = 'primary';
@@ -39,11 +39,14 @@ export class HomePage implements OnInit, OnDestroy {
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
     alarmStateService
+      .systemStateUpdate$
+      .subscribe(isActive => { this.isSystemActive = isActive; });
+
+    alarmStateService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
-    this
-      .particleCloudService
+    particleCloudService
       .open(message => { this.handleAlarmStateMessage(message) });
   }
 
@@ -61,15 +64,19 @@ export class HomePage implements OnInit, OnDestroy {
   private handleAlarmStateMessage(message): void {
     const alarmState = parseAlarmStateMessage(message);
 
+    if (alarmState.systemIsActive) {
+      this.alarmStateService.activateSystem();
+    } else {
+      this.alarmStateService.deactivateSystem();
+    }
+
     this.alarmStateService.updateState(alarmState);
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
-    const systemIsActive = alarmState.systemIsActive;
-
     this.isLoading = false;
 
-    if (systemIsActive) {
+    if (this.isSystemActive) {
       this.enableOrDisableSystemButtonColor = 'danger';
       this.enableOrDisableSystemButtonIcon = 'eye-off';
       this.enableOrDisableSystemButtonText = 'Dejar de vigilar';

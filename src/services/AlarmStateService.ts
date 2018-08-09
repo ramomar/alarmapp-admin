@@ -15,6 +15,12 @@ export class AlarmStateService {
 
   readonly availabilityUpdate$;
 
+  private isSystemActive: boolean;
+
+  private systemStateUpdateSource: Subject<boolean>;
+
+  readonly systemStateUpdate$;
+
   constructor() {
     this.alarmStateUpdateSource = new Subject<AlarmStateSummary>();
 
@@ -25,6 +31,10 @@ export class AlarmStateService {
     this.availabilityUpdateSource = new Subject<AreaAvailabilityUpdate>();
 
     this.availabilityUpdate$ = this.availabilityUpdateSource.asObservable();
+
+    this.systemStateUpdateSource = new Subject<boolean>();
+
+    this.systemStateUpdate$ = this.systemStateUpdateSource.asObservable();
   }
 
   public updateState(alarmStateSummary: AlarmStateSummary) {
@@ -58,21 +68,28 @@ export class AlarmStateService {
 
     return count;
   }
+
+  public activateSystem(): void {
+    this.isSystemActive = true;
+    this.systemStateUpdateSource.next(true);
+  }
+
+  public deactivateSystem(): void {
+    this.isSystemActive = false;
+    this.systemStateUpdateSource.next(false);
+  }
+
+  public getSystemState(): boolean {
+    return this.isSystemActive;
+  }
 }
 
 export class AlarmStateSummary {
-  readonly areas: Array<AreaSummary>;
-  readonly sirenIsActive: boolean;
-  readonly systemIsActive: boolean;
 
-  constructor(areas: Array<AreaSummary>,
-              sirenIsActive: boolean,
-              systemIsActive: boolean) {
-    this.areas = areas;
+  constructor(readonly areas: Array<AreaSummary>,
+              readonly sirenIsActive: boolean,
+              readonly systemIsActive: boolean) {
 
-    this.sirenIsActive = sirenIsActive;
-
-    this.systemIsActive = systemIsActive;
   }
 
   getAreasForFloor(floorNumber: number): Array<AreaSummary> {
@@ -81,27 +98,19 @@ export class AlarmStateSummary {
 }
 
 export class AreaSummary {
-  readonly number: number;
-  readonly isClosed: boolean;
-  readonly isDisabled: boolean;
 
-  constructor(number: number,
-              isClosed: boolean,
-              isDisabled: boolean) {
-    this.number = number;
-
-    this.isClosed = isClosed;
-
-    this.isDisabled = isDisabled;
+  constructor(readonly number: number,
+              readonly isClosed: boolean,
+              readonly isDisabled: boolean) {
   }
 }
 
 export class AreaAvailabilityUpdate {
   readonly area: number;
-  readonly disabled: boolean;
+  readonly isDisabled: boolean;
 
   constructor(area: number, isDisabled: boolean) {
     this.area = area;
-    this.disabled = isDisabled;
+    this.isDisabled = isDisabled;
   }
 }

@@ -14,13 +14,21 @@ export class FloorSummaryCardIndicator implements OnInit {
   @Input()
   areaSummary: AreaSummary;
 
+  private isSystemActive: boolean;
+
   private title: string;
+
   private content: string;
+
   private area: number;
+
   private iconName: string;
+
   private color: string;
 
   constructor(private alarmStateService: AlarmStateService) {
+    this.isSystemActive = false;
+
     this.alarmStateService
       .availabilityUpdate$
       .filter(update => update.area === this.area)
@@ -33,6 +41,7 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
     this.area = this.areaSummary.number;
+    this.isSystemActive = this.alarmStateService.getSystemState();
   }
 
   private handleEnableOrDisableAreaIndicatorTap(): void {
