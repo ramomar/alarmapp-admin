@@ -1,4 +1,7 @@
-import { AlarmStateSummary, AreaSummary } from './parsing';
+import {
+  AlarmStateSummary,
+  AreaSummary
+} from '../../services/AlarmStateService';
 
 function toAreaSummary(string, index): AreaSummary {
   return new AreaSummary(index+1, string.includes('1'), string.includes('d'));

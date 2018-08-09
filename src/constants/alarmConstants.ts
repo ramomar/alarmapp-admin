@@ -1,39 +1,3 @@
-export class AlarmStateSummary {
-  readonly areas: Array<AreaSummary>;
-  readonly sirenIsActive: boolean;
-  readonly systemIsActive: boolean;
-
-  constructor(areas: Array<AreaSummary>,
-              sirenIsActive: boolean,
-              systemIsActive: boolean) {
-    this.areas = areas;
-
-    this.sirenIsActive = sirenIsActive;
-
-    this.systemIsActive = systemIsActive;
-  }
-
-  getAreasForFloor(floorNumber: number): Array<AreaSummary> {
-    return this.areas.filter(a => AreaFloorMappings.get(a.number) === floorNumber);
-  }
-}
-
-export class AreaSummary {
-  readonly number: number;
-  readonly isClosed: boolean;
-  readonly isDisabled: boolean;
-
-  constructor(number: number,
-              isClosed: boolean,
-              isDisabled: boolean) {
-    this.number = number;
-
-    this.isClosed = isClosed;
-
-    this.isDisabled = isDisabled;
-  }
-}
-
 export enum Areas {
   MainDoor = 'main_door',
   SittingRoomMovementSensor = 'sitting_room_movement_sensor',

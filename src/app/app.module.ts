@@ -13,11 +13,10 @@ import { FloorDiagramCard } from '../components/floor_diagram_card';
 import { SummaryCard } from '../components/summary_card';
 import { FloorSummaryCard } from '../components/floor_summary_card';
 import { ParticleCloudService } from '../services/ParticleCloudService';
-import { AreaAvailabilityService } from '../services/AreaAvailabilityService';
+import { AlarmStateService } from '../services/AlarmStateService';
 import { FloorSummaryCardIndicator } from '../components/floor_summary_card_indicator';
 
 import Config from '../config.json';
-import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
 
 const particleCloudServiceFactory = () => {
   return new ParticleCloudService(
@@ -55,8 +54,7 @@ const particleCloudServiceFactory = () => {
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     { provide: ParticleCloudService, useFactory: particleCloudServiceFactory },
-    AlarmStateUpdatesService,
-    AreaAvailabilityService
+    AlarmStateService
   ]
 })
 export class AppModule {}

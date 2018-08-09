@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { AlarmStateSummary } from '../services/parsing/parsing';
-import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
+import {
+  AlarmStateService,
+  AlarmStateSummary
+} from '../services/AlarmStateService';
 
 @Component({
   selector: 'summary-card',
@@ -13,7 +15,7 @@ export class SummaryCard {
 
   private indicators: Array<SummaryCardIndicator>;
 
-  constructor(private alarmStateService: AlarmStateUpdatesService) {
+  constructor(private alarmStateService: AlarmStateService) {
     this.indicators = [];
 
     this.alarmStateService

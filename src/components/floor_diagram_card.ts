@@ -1,15 +1,15 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import {
-  AlarmStateSummary, AreaFloorMappings, AreaSummary,
-  AreaZonesMappings
-} from '../services/parsing/parsing';
-import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
-
-import { ZoneAreaMappings } from '../services/parsing/parsing';
-import {
-  AreaAvailabilityService,
+  AlarmStateService,
+  AlarmStateSummary,
+  AreaSummary,
   AreaAvailabilityUpdate
-} from '../services/AreaAvailabilityService';
+} from '../services/AlarmStateService';
+import {
+  ZoneAreaMappings,
+  AreaFloorMappings,
+  AreaZonesMappings
+} from '../constants/alarmConstants';
 
 @Component({
   selector: 'floor-diagram-card',
@@ -28,9 +28,9 @@ export class FloorDiagramCard implements OnInit {
 
   private floorNumber: number;
 
-  private ctaDisabled: boolean;
+  private isLoading: boolean;
 
-  private hasAreas: boolean;
+  private systemIsActive: boolean;
 
   private diagram;
 
@@ -38,15 +38,14 @@ export class FloorDiagramCard implements OnInit {
 
   private disabledAreasCount: number;
 
-  constructor(private alarmStateUpdatesService: AlarmStateUpdatesService,
-              private areaAvailabilityService: AreaAvailabilityService) {
-    this.hasAreas = false;
+  constructor(private alarmStateService: AlarmStateService) {
+    this.isLoading = true;
 
-    alarmStateUpdatesService
+    this.alarmStateService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
-    this.areaAvailabilityService
+    this.alarmStateService
       .availabilityUpdate$
       .subscribe(update => { this.handleAvailabilityUpdate(update) });
   }
@@ -58,9 +57,9 @@ export class FloorDiagramCard implements OnInit {
   }
 
   public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
-    this.hasAreas = true;
+    this.isLoading = false;
 
-    this.ctaDisabled = alarmStateUpdate.systemIsActive;
+    this.systemIsActive = alarmStateUpdate.systemIsActive;
 
     const areas = alarmStateUpdate.getAreasForFloor(this.floorNumber);
 
@@ -70,9 +69,9 @@ export class FloorDiagramCard implements OnInit {
 
     areas.forEach(area => {
       if (!area.isDisabled) {
-        this.areaAvailabilityService.enableArea(area.number);
+        this.alarmStateService.enableArea(area.number);
       } else {
-        this.areaAvailabilityService.disableArea(area.number);
+        this.alarmStateService.disableArea(area.number);
       }
     });
 
@@ -82,7 +81,7 @@ export class FloorDiagramCard implements OnInit {
   private handleEnableOrDisableAreaButtonClick(event): void {
     const zone = event.target.getAttribute('data-area-name');
 
-    if (this.hasAreas && ZoneAreaMappings.has(zone)) {
+    if (!this.isLoading && !this.systemIsActive && ZoneAreaMappings.has(zone)) {
       const area = ZoneAreaMappings.get(zone);
 
       this.enableOrDisableArea(area);
@@ -100,21 +99,20 @@ export class FloorDiagramCard implements OnInit {
   }
 
   private enableOrDisableArea(area: number): void {
-    if (this.areaAvailabilityService.isDisabled(area)) {
-      this.areaAvailabilityService.enableArea(area);
+    if (this.alarmStateService.isDisabled(area)) {
+      this.alarmStateService.enableArea(area);
     } else {
-      this.areaAvailabilityService.disableArea(area);
+      this.alarmStateService.disableArea(area);
     }
 
-    this.disabledAreasCount = this.areaAvailabilityService
-      .disabledAreasCountForFloor(this.floorNumber);
+    this.disabledAreasCount = this.alarmStateService.disabledAreasCountForFloor(this.floorNumber);
   }
 
   private fillStroke(area: AreaSummary): void {
     AreaZonesMappings.get(area.number).forEach(zone => {
       const zoneElement = this.diagram.querySelector(`[data-area-name=${zone}]`);
 
-      if (this.areaAvailabilityService.isDisabled(area.number)) {
+      if (this.alarmStateService.isDisabled(area.number)) {
         zoneElement.style.fill = 'silver';
       } else {
         zoneElement.style.fill = 'white';

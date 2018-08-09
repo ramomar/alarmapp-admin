@@ -2,8 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ParticleCloudService } from '../../services/ParticleCloudService';
 import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
-import { AlarmStateSummary } from "../../services/parsing/parsing";
-import { AlarmStateUpdatesService } from '../../services/AlarmStateUpdatesService';
+import {
+  AlarmStateService,
+  AlarmStateSummary
+} from '../../services/AlarmStateService';
 
 @Component({
   selector: 'page-home',
@@ -13,27 +15,30 @@ export class HomePage implements OnInit, OnDestroy {
 
   private overviewSegments: string;
 
-  private ctaDisabled: boolean;
-  private ctaColor: string;
-  private ctaIcon: string;
-  private ctaLegend: string;
+  private isLoading: boolean;
+
+  private enableOrDisableSystemButtonColor: string;
+
+  private enableOrDisableSystemButtonIcon: string;
+
+  private enableOrDisableSystemButtonText: string;
 
   constructor(public navCtrl: NavController,
               private particleCloudService: ParticleCloudService,
-              private alarmStateUpdatesService: AlarmStateUpdatesService) {
+              private alarmStateService: AlarmStateService) {
     this.overviewSegments = 'summarySegment';
 
     this.particleCloudService = particleCloudService;
 
-    this.ctaDisabled = true;
+    this.isLoading = true;
 
-    this.ctaColor = 'primary';
+    this.enableOrDisableSystemButtonColor = 'primary';
 
-    this.ctaIcon = 'eye';
+    this.enableOrDisableSystemButtonIcon = 'eye';
 
-    this.ctaLegend = 'Vigilar';
+    this.enableOrDisableSystemButtonText = 'Vigilar';
 
-    alarmStateUpdatesService
+    alarmStateService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
@@ -56,22 +61,22 @@ export class HomePage implements OnInit, OnDestroy {
   private handleAlarmStateMessage(message): void {
     const alarmState = parseAlarmStateMessage(message);
 
-    this.alarmStateUpdatesService.notifyAlarmStateUpdate(alarmState);
+    this.alarmStateService.updateState(alarmState);
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
     const systemIsActive = alarmState.systemIsActive;
 
-    this.ctaDisabled = false;
+    this.isLoading = false;
 
     if (systemIsActive) {
-      this.ctaColor = 'danger';
-      this.ctaIcon = 'eye-off';
-      this.ctaLegend = 'Dejar de vigilar';
+      this.enableOrDisableSystemButtonColor = 'danger';
+      this.enableOrDisableSystemButtonIcon = 'eye-off';
+      this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
     } else {
-      this.ctaColor = 'primary';
-      this.ctaIcon = 'eye';
-      this.ctaLegend = 'Vigilar';
+      this.enableOrDisableSystemButtonColor = 'primary';
+      this.enableOrDisableSystemButtonIcon = 'eye';
+      this.enableOrDisableSystemButtonText = 'Vigilar';
     }
   }
 }

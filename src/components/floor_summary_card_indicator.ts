@@ -1,15 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  AreaAvailabilityService,
-  AreaAvailabilityUpdate
-} from '../services/AreaAvailabilityService';
-import { AreaSummary } from '../services/parsing/parsing';
+  AlarmStateService,
+  AreaAvailabilityUpdate,
+  AreaSummary
+} from '../services/AlarmStateService';
 
 @Component({
   selector: 'floor-summary-card-indicator',
   templateUrl: './floor_summary_card_indicator.html'
 })
 export class FloorSummaryCardIndicator implements OnInit {
+
   @Input()
   areaSummary: AreaSummary;
 
@@ -19,8 +20,8 @@ export class FloorSummaryCardIndicator implements OnInit {
   private iconName: string;
   private color: string;
 
-  constructor(private areaAvailabilityService: AreaAvailabilityService) {
-    this.areaAvailabilityService
+  constructor(private alarmStateService: AlarmStateService) {
+    this.alarmStateService
       .availabilityUpdate$
       .filter(update => update.area === this.area)
       .subscribe(update => { this.handleAvailabilityUpdate(update); })
@@ -35,12 +36,12 @@ export class FloorSummaryCardIndicator implements OnInit {
   }
 
   private handleEnableOrDisableAreaIndicatorTap(): void {
-    const isDisabled = this.areaAvailabilityService.isDisabled(this.area);
+    const isDisabled = this.alarmStateService.isDisabled(this.area);
 
     if (isDisabled) {
-      this.areaAvailabilityService.enableArea(this.area);
+      this.alarmStateService.enableArea(this.area);
     } else {
-      this.areaAvailabilityService.disableArea(this.area);
+      this.alarmStateService.disableArea(this.area);
     }
   }
 

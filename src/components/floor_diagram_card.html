@@ -6,9 +6,9 @@
       <ng-content></ng-content>
     </section>
   <ion-card-content>
-    <ion-spinner name="bubbles" *ngIf="!hasAreas"></ion-spinner>
+    <ion-spinner name="bubbles" *ngIf="isLoading"></ion-spinner>
   </ion-card-content>
-  <div *ngIf="hasAreas">
+  <div *ngIf="!isLoading">
     <ion-row>
       <ion-col align-self-center text-center>
         <ion-note [ngSwitch]="disabledAreasCount">
@@ -29,7 +29,7 @@
       <ion-col>
       </ion-col>
       <ion-col align-self-center text-center>
-        <button ion-button icon-start clear small [disabled]="ctaDisabled">
+        <button ion-button icon-start clear small [disabled]="isLoading || systemIsActive">
           <ion-icon name="eye"></ion-icon>
           <div>Vigilar solo aquí</div>
         </button>

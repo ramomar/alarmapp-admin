@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { AlarmStateUpdatesService } from '../services/AlarmStateUpdatesService';
-import { AlarmStateSummary, AreaSummary } from '../services/parsing/parsing';
-import { AreaAvailabilityService } from '../services/AreaAvailabilityService';
+import {
+  AlarmStateService,
+  AlarmStateSummary,
+  AreaSummary
+} from '../services/AlarmStateService';
 
 @Component({
   selector: 'floor-summary-card',
@@ -17,13 +19,12 @@ export class FloorSummaryCard {
 
   private areaSummaries: Array<AreaSummary>;
 
-  constructor(private alarmStateUpdatesService: AlarmStateUpdatesService,
-              private areaAvailabilityService: AreaAvailabilityService) {
+  constructor(private alarmStateService: AlarmStateService) {
     this.areaSummaries = [];
 
-    this.alarmStateUpdatesService = alarmStateUpdatesService;
+    this.alarmStateService = alarmStateService;
 
-    this.alarmStateUpdatesService
+    this.alarmStateService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
