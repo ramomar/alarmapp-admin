@@ -28,7 +28,7 @@ export class SummaryCard {
       new SummaryCardIndicator(
         'Sistema',
         alarmStateSummary.systemIsActive ? 'Activado' : 'Desactivado',
-        alarmStateSummary.systemIsActive ? 'danger' : 'light'
+        alarmStateSummary.systemIsActive ? 'primary' : 'light'
       ),
       new SummaryCardIndicator(
         'Sirena',

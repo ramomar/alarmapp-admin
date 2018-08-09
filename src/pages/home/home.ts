@@ -19,8 +19,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   private isSystemActive: boolean;
 
-  private enableOrDisableSystemButtonColor: string;
-
   private enableOrDisableSystemButtonIcon: string;
 
   private enableOrDisableSystemButtonText: string;
@@ -77,11 +75,9 @@ export class HomePage implements OnInit, OnDestroy {
     this.isLoading = false;
 
     if (this.isSystemActive) {
-      this.enableOrDisableSystemButtonColor = 'danger';
       this.enableOrDisableSystemButtonIcon = 'eye-off';
       this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
     } else {
-      this.enableOrDisableSystemButtonColor = 'primary';
       this.enableOrDisableSystemButtonIcon = 'eye';
       this.enableOrDisableSystemButtonText = 'Vigilar';
     }
