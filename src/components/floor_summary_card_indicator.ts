@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  AlarmStateService,
-  AreaAvailabilityUpdate,
+  AlarmSystemService,
+  AreaAvailability,
   AreaSummary
-} from '../services/AlarmStateService';
+} from '../services/AlarmSystemService';
 
 @Component({
   selector: 'floor-summary-card-indicator',
@@ -26,12 +26,12 @@ export class FloorSummaryCardIndicator implements OnInit {
 
   private color: string;
 
-  constructor(private alarmStateService: AlarmStateService) {
+  constructor(private alarmSystemService: AlarmSystemService) {
     this.isSystemActive = false;
 
-    this.alarmStateService
+    this.alarmSystemService
       .availabilityUpdate$
-      .filter(update => update.area === this.area)
+      .filter(update => update.number === this.area)
       .subscribe(update => { this.handleAvailabilityUpdate(update); })
   }
 
@@ -41,20 +41,20 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
     this.area = this.areaSummary.number;
-    this.isSystemActive = this.alarmStateService.getSystemState();
+    this.isSystemActive = this.alarmSystemService.getSystemState();
   }
 
   private handleEnableOrDisableAreaIndicatorTap(): void {
-    const isDisabled = this.alarmStateService.isDisabled(this.area);
+    const isDisabled = this.alarmSystemService.isDisabled(this.area);
 
     if (isDisabled) {
-      this.alarmStateService.enableArea(this.area);
+      this.alarmSystemService.enableArea(this.area);
     } else {
-      this.alarmStateService.disableArea(this.area);
+      this.alarmSystemService.disableArea(this.area);
     }
   }
 
-  private handleAvailabilityUpdate(update: AreaAvailabilityUpdate): void {
+  private handleAvailabilityUpdate(update: AreaAvailability): void {
     if (this.iconName === 'eye-off') {
       this.iconName = 'eye';
     } else {

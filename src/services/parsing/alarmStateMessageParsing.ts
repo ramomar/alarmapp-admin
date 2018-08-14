@@ -1,18 +1,14 @@
 import {
   AlarmStateSummary,
   AreaSummary
-} from '../../services/AlarmStateService';
+} from '../AlarmSystemService';
 
 function toAreaSummary(string, index): AreaSummary {
   return new AreaSummary(index+1, string.includes('1'), string.includes('d'));
 }
 
-export function parseAlarmStateMessage(message): AlarmStateSummary {
-  const { data } = message;
-
-  const state = JSON.parse(data);
-
-  const [areasState, sirenState, systemState] = state.data.split('|');
+export function parseAlarmStateMessage(state): AlarmStateSummary {
+  const [areasState, sirenState, systemState] = state.split('|');
 
   const areas = areasState.split('-').map(toAreaSummary);
 

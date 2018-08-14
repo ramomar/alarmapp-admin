@@ -1,11 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { ParticleCloudService } from '../../services/ParticleCloudService';
-import { parseAlarmStateMessage } from '../../services/parsing/alarmStateMessageParsing';
-import {
-  AlarmStateService,
-  AlarmStateSummary
-} from '../../services/AlarmStateService';
+import { AlarmStateSummary, AlarmSystemService } from '../../services/AlarmSystemService';
 
 @Component({
   selector: 'page-home',
@@ -26,8 +21,7 @@ export class HomePage implements OnInit, OnDestroy {
   private enableOrDisableSystemButtonColor: string;
 
   constructor(public navCtrl: NavController,
-              private particleCloudService: ParticleCloudService,
-              private alarmStateService: AlarmStateService) {
+              private alarmSystemService: AlarmSystemService) {
     this.overviewSegments = 'summarySegment';
 
     this.isLoading = true;
@@ -38,45 +32,27 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
-    alarmStateService
+    alarmSystemService
       .systemStateUpdate$
       .subscribe(isActive => { this.isSystemActive = isActive; });
 
-    alarmStateService
+    alarmSystemService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
-
-    particleCloudService
-      .open(message => { this.handleAlarmStateMessage(message) });
   }
 
   ngOnInit(): void {
-    this.particleCloudService
-      .requestAlarmState()
-      .then(console.log)
-      .catch(console.log);
+    this.alarmSystemService.start();
   }
 
   ngOnDestroy(): void {
-    this.particleCloudService.close();
-  }
-
-  private handleAlarmStateMessage(message): void {
-    const alarmState = parseAlarmStateMessage(message);
-
-    if (alarmState.systemIsActive) {
-      this.alarmStateService.activateSystem();
-    } else {
-      this.alarmStateService.deactivateSystem();
-    }
-
-    this.alarmStateService.updateState(alarmState);
+    this.alarmSystemService.stop();
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
     this.isLoading = false;
 
-    if (this.isSystemActive) {
+    if (alarmState.isSystemActive) {
       this.enableOrDisableSystemButtonIcon = 'eye-off';
       this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
       this.enableOrDisableSystemButtonColor = 'danger';

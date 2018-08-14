@@ -1,25 +1,24 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
+import { AlarmStateBackend, AlarmStateSummary, AreaAvailability } from './AlarmSystemService';
 import { AreaFloorMappings } from '../constants/alarmConstants';
 
-@Injectable()
-export class AlarmStateService {
+export class AlarmStateService implements AlarmStateBackend {
 
   private disabledAreas: Set<number>;
 
   private alarmStateUpdateSource: Subject<AlarmStateSummary>;
 
-  readonly alarmStateUpdate$;
+  readonly alarmStateUpdate$: Observable<AlarmStateSummary>;
 
-  private availabilityUpdateSource: Subject<AreaAvailabilityUpdate>;
+  private availabilityUpdateSource: Subject<AreaAvailability>;
 
-  readonly availabilityUpdate$;
+  readonly availabilityUpdate$: Observable<AreaAvailability>;
 
   private isSystemActive: boolean;
 
   private systemStateUpdateSource: Subject<boolean>;
 
-  readonly systemStateUpdate$;
+  readonly systemStateUpdate$: Observable<boolean>;
 
   constructor() {
     this.alarmStateUpdateSource = new Subject<AlarmStateSummary>();
@@ -28,7 +27,7 @@ export class AlarmStateService {
 
     this.disabledAreas = new Set<number>();
 
-    this.availabilityUpdateSource = new Subject<AreaAvailabilityUpdate>();
+    this.availabilityUpdateSource = new Subject<AreaAvailability>();
 
     this.availabilityUpdate$ = this.availabilityUpdateSource.asObservable();
 
@@ -37,20 +36,21 @@ export class AlarmStateService {
     this.systemStateUpdate$ = this.systemStateUpdateSource.asObservable();
   }
 
-  public updateState(alarmStateSummary: AlarmStateSummary) {
+  public updateState(alarmStateSummary: AlarmStateSummary): void {
+    this.isSystemActive = alarmStateSummary.isSystemActive;
     this.alarmStateUpdateSource.next(alarmStateSummary);
   }
 
   public disableArea(area: number): void {
     this.disabledAreas.add(area);
 
-    this.availabilityUpdateSource.next(new AreaAvailabilityUpdate(area, true));
+    this.availabilityUpdateSource.next(new AreaAvailability(area, true));
   }
 
   public enableArea(area: number): void {
     this.disabledAreas.delete(area);
 
-    this.availabilityUpdateSource.next(new AreaAvailabilityUpdate(area, false));
+    this.availabilityUpdateSource.next(new AreaAvailability(area, false));
   }
 
   public isDisabled(area: number): boolean {
@@ -81,36 +81,5 @@ export class AlarmStateService {
 
   public getSystemState(): boolean {
     return this.isSystemActive;
-  }
-}
-
-export class AlarmStateSummary {
-
-  constructor(readonly areas: Array<AreaSummary>,
-              readonly sirenIsActive: boolean,
-              readonly systemIsActive: boolean) {
-
-  }
-
-  getAreasForFloor(floorNumber: number): Array<AreaSummary> {
-    return this.areas.filter(a => AreaFloorMappings.get(a.number) === floorNumber);
-  }
-}
-
-export class AreaSummary {
-
-  constructor(readonly number: number,
-              readonly isClosed: boolean,
-              readonly isDisabled: boolean) {
-  }
-}
-
-export class AreaAvailabilityUpdate {
-  readonly area: number;
-  readonly isDisabled: boolean;
-
-  constructor(area: number, isDisabled: boolean) {
-    this.area = area;
-    this.isDisabled = isDisabled;
   }
 }

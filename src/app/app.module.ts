@@ -12,9 +12,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { FloorDiagramCard } from '../components/floor_diagram_card';
 import { SummaryCard } from '../components/summary_card';
 import { FloorSummaryCard } from '../components/floor_summary_card';
+import { FloorSummaryCardIndicator } from '../components/floor_summary_card_indicator';
 import { ParticleCloudService } from '../services/ParticleCloudService';
 import { AlarmStateService } from '../services/AlarmStateService';
-import { FloorSummaryCardIndicator } from '../components/floor_summary_card_indicator';
+import { AlarmSystemService } from '../services/AlarmSystemService';
 
 import Config from '../config.json';
 
@@ -22,8 +23,21 @@ const particleCloudServiceFactory = () => {
   return new ParticleCloudService(
     Config.PARTICLE_API_HOST,
     Config.PARTICLE_ACCESS_TOKEN,
-    Config.PARTICLE_EVENT_PREFIX,
     Config.PARTICLE_DEVICE_ID
+  );
+};
+
+const alarmStateServiceFactory = () => {
+  return new AlarmStateService();
+};
+
+const alarmSystemServiceFactory = () => {
+  const alarmSystemBackend = particleCloudServiceFactory();
+  const alarmStateBackend = alarmStateServiceFactory();
+
+  return new AlarmSystemService(
+    alarmSystemBackend,
+    alarmStateBackend
   );
 };
 
@@ -53,8 +67,7 @@ const particleCloudServiceFactory = () => {
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    { provide: ParticleCloudService, useFactory: particleCloudServiceFactory },
-    AlarmStateService
+    { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory }
   ]
 })
 export class AppModule {}

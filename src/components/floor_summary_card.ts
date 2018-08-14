@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  AlarmStateService,
+  AlarmSystemService,
   AlarmStateSummary,
   AreaSummary
-} from '../services/AlarmStateService';
+} from '../services/AlarmSystemService';
 
 @Component({
   selector: 'floor-summary-card',
@@ -25,22 +25,20 @@ export class FloorSummaryCard implements OnInit {
 
   private areaSummaries: Array<AreaSummary>;
 
-  constructor(private alarmStateService: AlarmStateService) {
+  constructor(private alarmSystemService: AlarmSystemService) {
     this.areaSummaries = [];
-
-    this.alarmStateService = alarmStateService;
   }
 
   ngOnInit(): void {
     this.floorNumber = parseInt(this.floorNumberString, 10);
 
-    this.alarmStateService
+    this.alarmSystemService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
 
-    this.alarmStateService
+    this.alarmSystemService
       .availabilityUpdate$
-      .subscribe(update => { this.updateDisabledAreasCount(); });
+      .subscribe(_ => { this.updateDisabledAreasCount(); });
   }
 
   private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {
@@ -50,11 +48,12 @@ export class FloorSummaryCard implements OnInit {
 
     this.updateDisabledAreasCount();
 
+    // No problem. It's easier to just re-render indicators.
     this.areaSummaries = areas;
   }
 
   private updateDisabledAreasCount(): void {
-    this.disabledAreasCount = this.alarmStateService
+    this.disabledAreasCount = this.alarmSystemService
       .getDisabledAreasCountForFloor(this.floorNumber);
   }
 }
