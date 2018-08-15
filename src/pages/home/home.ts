@@ -1,3 +1,4 @@
+import { Vibration } from '@ionic-native/vibration';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, NavController } from 'ionic-angular';
 import { AlarmStateSummary, AlarmSystemService } from '../../services/AlarmSystemService';
@@ -24,7 +25,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
-              private alarmSystemService: AlarmSystemService) {
+              private alarmSystemService: AlarmSystemService,
+              private vibration: Vibration) {
     this.overviewSegments = 'summarySegment';
 
     this.isLoading = true;
@@ -41,7 +43,7 @@ export class HomePage implements OnInit, OnDestroy {
       .systemStateUpdate$
       .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
 
-    alarmSystemService
+    this.alarmSystemService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
   }
@@ -95,6 +97,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   private handleSystemStateUpdate(systemStateUpdate: boolean): void {
     this.isSystemActive = systemStateUpdate;
+
+    if (systemStateUpdate) {
+      this.vibration.vibrate(200);
+    }
 
     this.updateEnableOrDisableSystemButton(systemStateUpdate);
   }

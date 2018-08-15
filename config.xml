@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ramomarr.alarmapp" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ramomar.alarmapp" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Alarmapp</name>
     <description>An app for an old alarm system.</description>
     <author email="" href="https://github.com/ramomar/">Eduardo Garza</author>
@@ -83,4 +83,6 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^2.0.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
+    <plugin name="cordova-plugin-vibration" spec="^3.1.0" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
 </widget>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import {AlarmSystemService} from "../../services/AlarmSystemService";
+import { AlarmSystemService } from '../../services/AlarmSystemService';
 
 @Component({
   selector: 'page-settings',

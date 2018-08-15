@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { App } from './app.component';
 
+import { Vibration } from '@ionic-native/vibration'
+
 import { SettingsPage } from '../pages/settings/settings';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -86,6 +88,7 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
   providers: [
     StatusBar,
     SplashScreen,
+    Vibration,
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory },
     { provide: ParticleCloudService, useFactory: particleCloudServiceFactory }
