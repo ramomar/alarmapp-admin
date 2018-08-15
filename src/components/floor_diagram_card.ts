@@ -87,6 +87,9 @@ export class FloorDiagramCard implements OnInit {
   }
 
   private handleAvailabilityUpdate(areaAvailabilityUpdate: AreaAvailability): void {
+    this.disabledAreasCount = this.alarmSystemService
+      .getDisabledAreasCountForFloor(this.floorNumber);
+
     if (AreaFloorMappings.get(areaAvailabilityUpdate.number) === this.floorNumber) {
       if (areaAvailabilityUpdate.isDisabled) {
         this.fillArea(areaAvailabilityUpdate.number, 'silver');
