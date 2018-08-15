@@ -93,16 +93,38 @@ export class AlarmSystemService {
     this.alarmSystemBackend.close();
   }
 
-  public activateSystem(areas: Array<AreaAvailability>): void {
-    this.alarmSystemBackend.activateSystem(areas).then(_ => {
-      this.alarmStateBackend.activateSystem();
-    });
+  public activateSystem(): void {
+    const areas = this.getAreas();
+
+    this.activateSystemP(areas);
   }
 
   public deactivateSystem(): void {
     this.alarmSystemBackend.deactivateSystem().then(_ => {
       this.alarmStateBackend.deactivateSystem();
     });
+  }
+
+  public activateSystemForFloor(floor: number): void {
+    const areas = this.getAreas();
+    const floorAreas = new Set(this.getAreasForFloor(floor).map(area => area.number));
+
+    const updatedAreas = areas.map(area => {
+      return new AreaAvailability(
+        area.number,
+        floorAreas.has(area.number) ? this.isDisabled(area.number) : true
+      );
+    });
+
+    updatedAreas.forEach(area => {
+      if (area.isDisabled) {
+        this.disableArea(area.number);
+      } else {
+        this.enableArea(area.number);
+      }
+    });
+
+    this.activateSystemP(updatedAreas);
   }
 
   public getIsSystemActive(): boolean {
@@ -131,6 +153,12 @@ export class AlarmSystemService {
 
   public getDisabledAreasCountForFloor(floor: number): number {
     return this.alarmStateBackend.getDisabledAreasCountForFloor(floor);
+  }
+
+  private activateSystemP(areas: Array<AreaAvailability>): void {
+    this.alarmSystemBackend.activateSystem(areas).then(_ => {
+      this.alarmStateBackend.activateSystem();
+    });
   }
 }
 

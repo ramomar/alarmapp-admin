@@ -72,7 +72,11 @@ export class FloorDiagramCard implements OnInit {
     areas.forEach(area => { this.fillStroke(area) });
   }
 
-  private handleEnableOrDisableAreaButtonClick(event): void {
+  private activateSystemOnlyInFloorButton(): void {
+    this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+  }
+
+  private enableOrDisableAreaButton(event): void {
     const zone = event.target.getAttribute('data-area-name');
 
     if (!this.isLoading && !this.isSystemActive && ZoneAreaMappings.has(zone)) {

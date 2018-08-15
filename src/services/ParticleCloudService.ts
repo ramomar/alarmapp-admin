@@ -59,7 +59,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
       method: 'GET'
     };
 
-    return improvedFetch(url, options, 3, 2000).then(r => r.json());
+    return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
   public activateSystem(areas: Array<AreaAvailability>): Promise<any> {
@@ -79,7 +79,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
       body: body
     };
 
-    return improvedFetch(url, options, 3, 2000).then(r => r.json());
+    return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
   public deactivateSystem(): Promise<any> {
@@ -99,7 +99,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
       body: body
     };
 
-    return improvedFetch(url, options, 3, 2000).then(r => r.json());
+    return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
   private setOnMessageHandler(prefix, onMessageHandler: (message) => void): void {

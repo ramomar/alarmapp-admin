@@ -37,9 +37,9 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
-    alarmSystemService
+    this.alarmSystemService
       .systemStateUpdate$
-      .subscribe(isActive => { this.isSystemActive = isActive; });
+      .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
 
     alarmSystemService
       .alarmStateUpdate$
@@ -55,6 +55,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private onError(error) {
+    console.log(error);
+
     const retry = () => {
       this.alarmSystemService.start(e => { this.onError(e) });
 
@@ -83,10 +85,28 @@ export class HomePage implements OnInit, OnDestroy {
     alert.present();
   }
 
+  private activateSystemButton() {
+    if (this.isSystemActive) {
+      this.alarmSystemService.deactivateSystem();
+    } else {
+      this.alarmSystemService.activateSystem();
+    }
+  }
+
+  private handleSystemStateUpdate(systemStateUpdate: boolean): void {
+    this.isSystemActive = systemStateUpdate;
+
+    this.updateEnableOrDisableSystemButton(systemStateUpdate);
+  }
+
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
     this.isLoading = false;
 
-    if (alarmState.isSystemActive) {
+    this.updateEnableOrDisableSystemButton(alarmState.isSystemActive);
+  }
+
+  private updateEnableOrDisableSystemButton(isSystemActive: boolean): void {
+    if (isSystemActive) {
       this.enableOrDisableSystemButtonIcon = 'eye-off';
       this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
       this.enableOrDisableSystemButtonColor = 'danger';

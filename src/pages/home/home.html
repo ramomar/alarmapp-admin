@@ -101,7 +101,8 @@
 <ion-footer>
   <button ion-button full icon-start big
     [color]="enableOrDisableSystemButtonColor"
-    [disabled]="isLoading">
+    [disabled]="isLoading"
+    (click)="activateSystemButton()">
       <ion-icon [name]="enableOrDisableSystemButtonIcon"></ion-icon>
       <div>{{enableOrDisableSystemButtonText}}</div>
   </button>

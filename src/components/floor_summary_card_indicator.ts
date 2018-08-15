@@ -30,9 +30,13 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.isSystemActive = false;
 
     this.alarmSystemService
+      .systemStateUpdate$
+      .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
+
+    this.alarmSystemService
       .availabilityUpdate$
-      .filter(update => update.number === this.area)
-      .subscribe(update => { this.handleAvailabilityUpdate(update); })
+      .filter(area => area.number === this.area)
+      .subscribe(areaUpdate => { this.handleAvailabilityUpdate(areaUpdate); });
   }
 
   ngOnInit(): void {
@@ -41,7 +45,7 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
     this.area = this.areaSummary.number;
-    this.isSystemActive = this.alarmSystemService.getSystemState();
+    this.isSystemActive = this.alarmSystemService.getIsSystemActive();
   }
 
   private handleEnableOrDisableAreaIndicatorTap(): void {
@@ -54,8 +58,12 @@ export class FloorSummaryCardIndicator implements OnInit {
     }
   }
 
-  private handleAvailabilityUpdate(update: AreaAvailability): void {
-    if (this.iconName === 'eye-off') {
+  private handleSystemStateUpdate(systemStateUpdate: boolean): void {
+    this.isSystemActive = systemStateUpdate;
+  }
+
+  private handleAvailabilityUpdate(areaUpdate: AreaAvailability): void {
+    if (areaUpdate.isDisabled) {
       this.iconName = 'eye';
     } else {
       this.iconName = 'eye-off';
