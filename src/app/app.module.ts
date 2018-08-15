@@ -32,14 +32,20 @@ const alarmStateServiceFactory = () => {
   return new AlarmStateService();
 };
 
-const alarmSystemServiceFactory = () => {
-  const alarmSystemBackend = particleCloudServiceFactory();
-  const alarmStateBackend = alarmStateServiceFactory();
+let alarmSystemService;
 
-  return new AlarmSystemService(
-    alarmSystemBackend,
-    alarmStateBackend
-  );
+const alarmSystemServiceFactory = () => {
+  if (!alarmSystemService) {
+    const alarmSystemBackend = particleCloudServiceFactory();
+    const alarmStateBackend = alarmStateServiceFactory();
+
+    alarmSystemService = new AlarmSystemService(
+      alarmSystemBackend,
+      alarmStateBackend
+    );
+  }
+
+  return alarmSystemService;
 };
 
 Sentry.init({ dsn: Config.SENTRY_DSN });
@@ -81,7 +87,8 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
-    { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory }
+    { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory },
+    { provide: ParticleCloudService, useFactory: particleCloudServiceFactory }
   ]
 })
 export class AppModule {}

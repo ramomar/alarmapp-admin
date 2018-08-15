@@ -19,6 +19,8 @@ export interface AlarmSystemBackend {
   close(): void
 
   onSystemState(handler: (object) => void): void
+
+  testSiren(durationSecs: number): Promise<any>
 }
 
 export interface AlarmStateBackend {
@@ -62,6 +64,7 @@ export class AlarmSystemService {
 
   constructor(private alarmSystemBackend: AlarmSystemBackend,
               private alarmStateBackend: AlarmStateBackend) {
+
   }
 
   public start(onError: (error: any) => void): void {
@@ -153,6 +156,10 @@ export class AlarmSystemService {
 
   public getDisabledAreasCountForFloor(floor: number): number {
     return this.alarmStateBackend.getDisabledAreasCountForFloor(floor);
+  }
+
+  public testSiren(durationMs: number): Promise<any> {
+    return this.alarmSystemBackend.testSiren(durationMs);
   }
 
   private activateSystemP(areas: Array<AreaAvailability>): void {

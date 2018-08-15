@@ -102,6 +102,26 @@ export class ParticleCloudService implements AlarmSystemBackend {
     return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
+  public testSiren(durationMs: number): Promise<any> {
+    const url = new URL('v1/devices/events', this.host);
+
+    const body = [
+      'name=testSiren',
+      `data=${durationMs}`,
+      'private=true',
+      'ttl=60',
+      `access_token=${this.accessToken}`
+    ].join('&');
+
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    };
+
+    return improvedFetch(url, options, 3, 10000).then(r => r.json());
+  }
+
   private setOnMessageHandler(prefix, onMessageHandler: (message) => void): void {
     this.eventsSource.addEventListener(prefix, onMessageHandler, false);
   }
