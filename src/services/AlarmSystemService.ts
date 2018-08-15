@@ -14,7 +14,7 @@ export interface AlarmSystemBackend {
 
   getSystemState(): Promise<any>
 
-  open(): void
+  open(onError: (error: any) => void): void
 
   close(): void
 
@@ -60,8 +60,8 @@ export class AlarmSystemService {
               private alarmStateBackend: AlarmStateBackend) {
   }
 
-  public start(): void {
-    this.alarmSystemBackend.open();
+  public start(onError: (error: any) => void): void {
+    this.alarmSystemBackend.open(onError);
 
     this.alarmSystemBackend.onSystemState(messageEnvelope => {
       const { data } = messageEnvelope;
@@ -77,7 +77,7 @@ export class AlarmSystemService {
       const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
 
       this.handleSystemStateEvent(alarmState);
-    }).catch(console.log);
+    }).catch(onError);
   }
 
   public stop(): void {

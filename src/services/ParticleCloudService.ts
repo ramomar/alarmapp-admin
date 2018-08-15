@@ -1,4 +1,4 @@
-import { retryFetch } from '../utils/retryFetch.js';
+import { improvedFetch } from '../utils/improvedFetch.js';
 import { AlarmSystemBackend, AreaAvailability } from './AlarmSystemService';
 
 const Events = window['EventSource'];
@@ -23,7 +23,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
     this.deviceId = deviceId;
   }
 
-  public open(): void {
+  public open(onError: (error: any) => void): void {
     const path =[
       'v1',
       'events',
@@ -34,7 +34,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
 
     this.eventsSource = new Events(url.href);
 
-    this.setOnErrorHandler();
+    this.setOnErrorHandler(onError);
   }
 
   public close() {
@@ -59,7 +59,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
       method: 'GET'
     };
 
-    return retryFetch(url, options, 3).then(r => r.json());
+    return improvedFetch(url, options, 3, 2000).then(r => r.json());
   }
 
   public activateSystem(areas: Array<AreaAvailability>): Promise<any> {
@@ -79,7 +79,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
       body: body
     };
 
-    return retryFetch(url, options, 3);
+    return improvedFetch(url, options, 3, 2000);
   }
 
   public deactivateSystem(): Promise<any> {
@@ -99,23 +99,14 @@ export class ParticleCloudService implements AlarmSystemBackend {
       body: body
     };
 
-    return retryFetch(url, options, 3);
+    return improvedFetch(url, options, 3, 2000);
   }
 
   private setOnMessageHandler(prefix, onMessageHandler: (message) => void): void {
     this.eventsSource.addEventListener(prefix, onMessageHandler, false);
   }
 
-  private setOnErrorHandler(): void {
-    this.eventsSource.addEventListener('error', (error) => {
-      this.close();
-
-      if (error.readyState === Events.CLOSED) {
-        throw new Error('Connection was closed!');
-      }
-      else {
-        throw new Error('Something bad happened/Could not connect!');
-      }
-    }, false);
+  private setOnErrorHandler(onError: (error: any) => void): void {
+    this.eventsSource.addEventListener('error', onError);
   }
 }

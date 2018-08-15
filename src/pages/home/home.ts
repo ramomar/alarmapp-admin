@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { AlertController, NavController } from 'ionic-angular';
 import { AlarmStateSummary, AlarmSystemService } from '../../services/AlarmSystemService';
 
 @Component({
@@ -21,6 +21,7 @@ export class HomePage implements OnInit, OnDestroy {
   private enableOrDisableSystemButtonColor: string;
 
   constructor(public navCtrl: NavController,
+              public alertCtrl: AlertController,
               private alarmSystemService: AlarmSystemService) {
     this.overviewSegments = 'summarySegment';
 
@@ -42,11 +43,54 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.alarmSystemService.start();
+    this.alarmSystemService.start(e => { this.onError(e); });
   }
 
   ngOnDestroy(): void {
     this.alarmSystemService.stop();
+  }
+
+  private onError(error) {
+    const retry = () => { this.alarmSystemService.start(e => { this.onError(e) }); };
+    const report = () => {
+      console.log(error);
+      this.pleaseCloseTheApp();
+    };
+
+    this.presentConnectRetry(retry, report);
+  }
+
+  private presentConnectRetry(retryHandler, reportHandler): void {
+    const alertOptions = {
+      title: 'Oops',
+      message: 'Alarmapp está teniendo problemas para conectarse.',
+      buttons: [
+        {
+          text: 'Reportar',
+          handler: reportHandler
+        },
+        {
+          text: 'Reintentar',
+          handler: retryHandler
+        }
+      ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present();
+  }
+
+  private pleaseCloseTheApp(): void {
+    const alertOptions = {
+      title: 'Error reportado',
+      message: 'Por favor cierra la aplicación.',
+      buttons: ['Ok']
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present();
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
