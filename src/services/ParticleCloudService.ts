@@ -1,4 +1,4 @@
-import { improvedFetch } from '../utils/improvedFetch.js';
+import { improvedFetch } from '../utils/improvedFetch';
 import { AlarmSystemBackend, AreaAvailability } from './AlarmSystemService';
 
 const Events = window['EventSource'];
@@ -107,6 +107,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
   }
 
   private setOnErrorHandler(onError: (error: any) => void): void {
+    this.close();
     this.eventsSource.addEventListener('error', onError);
   }
 }

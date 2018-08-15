@@ -9,6 +9,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import * as Sentry from 'sentry-cordova';
 import { FloorDiagramCard } from '../components/floor_diagram_card';
 import { SummaryCard } from '../components/summary_card';
 import { FloorSummaryCard } from '../components/floor_summary_card';
@@ -41,6 +42,19 @@ const alarmSystemServiceFactory = () => {
   );
 };
 
+Sentry.init({ dsn: Config.SENTRY_DSN });
+
+class SentryIonicErrorHandler extends IonicErrorHandler {
+  handleError(error) {
+    super.handleError(error);
+    try {
+      Sentry.captureException(error.originalError || error);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+
 @NgModule({
   declarations: [
     App,
@@ -66,7 +80,7 @@ const alarmSystemServiceFactory = () => {
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory }
   ]
 })

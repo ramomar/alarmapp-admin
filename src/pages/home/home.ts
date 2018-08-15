@@ -12,6 +12,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private isLoading: boolean;
 
+  private reconnectRetries: number;
+
   private isSystemActive: boolean;
 
   private enableOrDisableSystemButtonIcon: string;
@@ -26,6 +28,8 @@ export class HomePage implements OnInit, OnDestroy {
     this.overviewSegments = 'summarySegment';
 
     this.isLoading = true;
+
+    this.reconnectRetries = 0;
 
     this.enableOrDisableSystemButtonIcon = 'eye';
 
@@ -51,41 +55,27 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private onError(error) {
-    const retry = () => { this.alarmSystemService.start(e => { this.onError(e) }); };
-    const report = () => {
-      console.log(error);
-      this.pleaseCloseTheApp();
+    const retry = () => {
+      this.alarmSystemService.start(e => { this.onError(e) });
+
+      this.reconnectRetries += 1;
     };
 
-    this.presentConnectRetry(retry, report);
+    this.presentConnectRetry(retry);
+
+    if (this.reconnectRetries === 3) {
+      throw error;
+    }
   }
 
-  private presentConnectRetry(retryHandler, reportHandler): void {
+  private presentConnectRetry(retryHandler): void {
     const alertOptions = {
-      title: 'Oops',
-      message: 'Alarmapp está teniendo problemas para conectarse.',
+      title: '¡Uy!',
+      message: 'Alarmapp esta teniendo problemas para contectarse.',
       buttons: [
-        {
-          text: 'Reportar',
-          handler: reportHandler
-        },
-        {
-          text: 'Reintentar',
-          handler: retryHandler
-        }
-      ]
-    };
-
-    const alert = this.alertCtrl.create(alertOptions);
-
-    alert.present();
-  }
-
-  private pleaseCloseTheApp(): void {
-    const alertOptions = {
-      title: 'Error reportado',
-      message: 'Por favor cierra la aplicación.',
-      buttons: ['Ok']
+        { text: 'Reintentar', handler: retryHandler }
+      ],
+      enableBackdropDismiss: false
     };
 
     const alert = this.alertCtrl.create(alertOptions);

@@ -9,17 +9,18 @@ function timeoutFetch(url, options, timeout) {
       clearTimeout(timer);
       resolve(response)
     }).catch(error => {
+      clearTimeout(timer);
       reject(error);
     });
   });
 }
 
 export function improvedFetch(url, options, retries, timeout) {
-  if (retries === 1) {
+  if (retries <= 1) {
     return timeoutFetch(url, options, timeout);
   }
   else {
     return timeoutFetch(url, options, timeout)
-      .catch(_ => improvedFetch(url, options, retries-1, timeout))
+      .catch(improvedFetch(url, options, retries-1, timeout));
   }
 }

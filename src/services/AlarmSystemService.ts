@@ -73,10 +73,15 @@ export class AlarmSystemService {
       this.handleSystemStateEvent(alarmState);
     });
 
+    //Promise.resolve({ result: '0-0-0-0-0-1|0|0' })
     this.alarmSystemBackend.getSystemState().then(response => {
-      const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
+      if (response.ok) {
+        const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
 
-      this.handleSystemStateEvent(alarmState);
+        this.handleSystemStateEvent(alarmState);
+      } else {
+        throw new Error('getSystemState() request failed!');
+      }
     }).catch(onError);
   }
 
