@@ -4,6 +4,8 @@ import { AreaFloorMappings } from '../constants/alarmConstants';
 
 export class AlarmStateService implements AlarmStateBackend {
 
+  private areas: Set<number>;
+
   private disabledAreas: Set<number>;
 
   private alarmStateUpdateSource: Subject<AlarmStateSummary>;
@@ -25,6 +27,8 @@ export class AlarmStateService implements AlarmStateBackend {
 
     this.alarmStateUpdate$ = this.alarmStateUpdateSource.asObservable();
 
+    this.areas = new Set<number>();
+
     this.disabledAreas = new Set<number>();
 
     this.availabilityUpdateSource = new Subject<AreaAvailability>();
@@ -37,7 +41,24 @@ export class AlarmStateService implements AlarmStateBackend {
   }
 
   public updateState(alarmStateSummary: AlarmStateSummary): void {
-    this.isSystemActive = alarmStateSummary.isSystemActive;
+    if (alarmStateSummary.isSystemActive) {
+      this.activateSystem();
+    } else {
+      this.deactivateSystem();
+    }
+
+    alarmStateSummary.areas.forEach(area => {
+      if (area.isDisabled) {
+        this.disableArea(area.number);
+      } else {
+        this.enableArea(area.number);
+      }
+    });
+
+    alarmStateSummary.areas.forEach(area => {
+      this.areas.add(area.number); // It is ok to just add areas to the set.
+    });
+
     this.alarmStateUpdateSource.next(alarmStateSummary);
   }
 
@@ -57,16 +78,24 @@ export class AlarmStateService implements AlarmStateBackend {
     return this.disabledAreas.has(area);
   }
 
+  public getAreas(): Array<AreaAvailability> {
+    return Array.from(this.areas).map(area =>
+      new AreaAvailability(
+        area,
+        this.disabledAreas.has(area)
+      )
+    );
+  }
+
+  public getAreasForFloor(floor: number): Array<AreaAvailability> {
+    return this.getAreas()
+      .filter(area => AreaFloorMappings.get(area.number) === floor);
+  }
+
   public getDisabledAreasCountForFloor(floor: number): number {
-    let count = 0;
-
-    this.disabledAreas.forEach(area => {
-      if (AreaFloorMappings.get(area) === floor) {
-        count += 1;
-      }
-    });
-
-    return count;
+    return this.getAreasForFloor(floor)
+      .filter(area => area.isDisabled)
+      .length;
   }
 
   public activateSystem(): void {
@@ -79,7 +108,7 @@ export class AlarmStateService implements AlarmStateBackend {
     this.systemStateUpdateSource.next(false);
   }
 
-  public getSystemState(): boolean {
+  public getIsSystemActive(): boolean {
     return this.isSystemActive;
   }
 }

@@ -36,13 +36,17 @@ export interface AlarmStateBackend {
 
   isDisabled(area: number): boolean
 
-  getDisabledAreasCountForFloor(floor: number): number
-
   activateSystem(): void
 
   deactivateSystem(): void
 
-  getSystemState(): boolean
+  getIsSystemActive(): boolean
+
+  getAreas(): Array<AreaAvailability>
+
+  getAreasForFloor(floor: number): Array<AreaAvailability>
+
+  getDisabledAreasCountForFloor(floor: number): number
 }
 
 @Injectable()
@@ -70,15 +74,15 @@ export class AlarmSystemService {
 
       const alarmState: AlarmStateSummary = parseAlarmStateMessage(message.data);
 
-      this.handleSystemStateEvent(alarmState);
+      this.alarmStateBackend.updateState(alarmState);
     });
 
-    //Promise.resolve({ result: '0-0-0-0-0-1|0|0' })
-    this.alarmSystemBackend.getSystemState().then(response => {
-      if (response.ok) {
+    Promise.resolve({ result: '0-0-0-0-0-1|0|0' }).then(response => {
+    //this.alarmSystemBackend.getSystemState().then(response => {
+      if (response.result) {
         const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
 
-        this.handleSystemStateEvent(alarmState);
+        this.alarmStateBackend.updateState(alarmState);
       } else {
         throw new Error('getSystemState() request failed!');
       }
@@ -89,8 +93,8 @@ export class AlarmSystemService {
     this.alarmSystemBackend.close();
   }
 
-  public activateSystem(): void {
-    this.alarmSystemBackend.activateSystem([]).then(_ => {
+  public activateSystem(areas: Array<AreaAvailability>): void {
+    this.alarmSystemBackend.activateSystem(areas).then(_ => {
       this.alarmStateBackend.activateSystem();
     });
   }
@@ -101,20 +105,8 @@ export class AlarmSystemService {
     });
   }
 
-  public getSystemState(): boolean {
-    return this.alarmStateBackend.getSystemState();
-  }
-
-  public updateState(alarmStateSummary: AlarmStateSummary): void {
-    alarmStateSummary.areas.forEach(area => {
-      if (area.isDisabled) {
-        this.alarmStateBackend.disableArea(area.number);
-      } else {
-        this.alarmStateBackend.enableArea(area.number);
-      }
-    });
-
-    this.alarmStateBackend.updateState(alarmStateSummary);
+  public getIsSystemActive(): boolean {
+    return this.alarmStateBackend.getIsSystemActive();
   }
 
   public enableArea(area: number): void {
@@ -129,18 +121,16 @@ export class AlarmSystemService {
     return this.alarmStateBackend.isDisabled(area);
   }
 
-  public getDisabledAreasCountForFloor(floor: number): number {
-    return this.alarmStateBackend.getDisabledAreasCountForFloor(floor);
+  public getAreas(): Array<AreaAvailability> {
+    return this.alarmStateBackend.getAreas();
   }
 
-  private handleSystemStateEvent(alarmStateSummary: AlarmStateSummary): void {
-    if (alarmStateSummary.isSystemActive) {
-      this.activateSystem();
-    } else {
-      this.deactivateSystem();
-    }
+  public getAreasForFloor(floor: number): Array<AreaAvailability> {
+    return this.alarmStateBackend.getAreasForFloor(floor);
+  }
 
-    this.updateState(alarmStateSummary);
+  public getDisabledAreasCountForFloor(floor: number): number {
+    return this.alarmStateBackend.getDisabledAreasCountForFloor(floor);
   }
 }
 

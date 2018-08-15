@@ -21,6 +21,6 @@ export function improvedFetch(url, options, retries, timeout) {
   }
   else {
     return timeoutFetch(url, options, timeout)
-      .catch(improvedFetch(url, options, retries-1, timeout));
+      .catch(_  => { return improvedFetch(url, options, retries-1, timeout) });
   }
 }
