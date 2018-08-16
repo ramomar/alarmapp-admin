@@ -21,7 +21,7 @@ export class FloorDiagramCard implements OnInit {
   cardTitle: string;
 
   @Input()
-  floorNumberInput: string;
+  floorNumberString: string;
 
   @ViewChild('floorDiagram')
   floorDiagram: ElementRef;
@@ -34,15 +34,11 @@ export class FloorDiagramCard implements OnInit {
 
   private diagram;
 
-  private openAreasCount: number;
-
-  private disabledAreasCount: number;
-
   constructor(private alarmSystemService: AlarmSystemService) {
     this.isLoading = true;
 
     this.alarmSystemService
-      .systemStateUpdate$
+      .systemStatusUpdate$
       .subscribe(isActive => { this.isSystemActive = isActive; });
 
     this.alarmSystemService
@@ -55,7 +51,7 @@ export class FloorDiagramCard implements OnInit {
   }
 
   ngOnInit() {
-    this.floorNumber = parseInt(this.floorNumberInput, 10);
+    this.floorNumber = parseInt(this.floorNumberString, 10);
 
     this.diagram = this.floorDiagram.nativeElement.firstElementChild;
   }
@@ -64,10 +60,6 @@ export class FloorDiagramCard implements OnInit {
     this.isLoading = false;
 
     const areas = alarmStateUpdate.getAreasForFloor(this.floorNumber);
-
-    this.openAreasCount = areas.filter(a => !a.isClosed).length;
-
-    this.disabledAreasCount = areas.filter(a => a.isDisabled).length;
 
     areas.forEach(area => { this.fillStroke(area) });
   }
@@ -87,9 +79,6 @@ export class FloorDiagramCard implements OnInit {
   }
 
   private handleAvailabilityUpdate(areaAvailabilityUpdate: AreaAvailability): void {
-    this.disabledAreasCount = this.alarmSystemService
-      .getDisabledAreasCountForFloor(this.floorNumber);
-
     if (AreaFloorMappings.get(areaAvailabilityUpdate.number) === this.floorNumber) {
       if (areaAvailabilityUpdate.isDisabled) {
         this.fillArea(areaAvailabilityUpdate.number, 'silver');
@@ -105,8 +94,6 @@ export class FloorDiagramCard implements OnInit {
     } else {
       this.alarmSystemService.disableArea(area);
     }
-
-    this.disabledAreasCount = this.alarmSystemService.getDisabledAreasCountForFloor(this.floorNumber);
   }
 
   private fillStroke(area: AreaSummary): void {

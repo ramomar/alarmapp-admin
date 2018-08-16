@@ -13,6 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as Sentry from 'sentry-cordova';
 import { FloorDiagramCard } from '../components/floor_diagram_card';
+import { FloorAreasSummary } from '../components/floor_areas_summary';
 import { SummaryCard } from '../components/summary_card';
 import { FloorSummaryCard } from '../components/floor_summary_card';
 import { FloorSummaryCardIndicator } from '../components/floor_summary_card_indicator';
@@ -70,6 +71,7 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
     HomePage,
     TabsPage,
     FloorDiagramCard,
+    FloorAreasSummary,
     SummaryCard,
     FloorSummaryCard,
     FloorSummaryCardIndicator

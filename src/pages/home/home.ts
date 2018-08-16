@@ -40,7 +40,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
     this.alarmSystemService
-      .systemStateUpdate$
+      .systemStatusUpdate$
       .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
 
     this.alarmSystemService

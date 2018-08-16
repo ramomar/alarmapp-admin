@@ -8,6 +8,8 @@ export class AlarmStateService implements AlarmStateBackend {
 
   private disabledAreas: Set<number>;
 
+  private openAreas: Set<number>;
+
   private alarmStateUpdateSource: Subject<AlarmStateSummary>;
 
   readonly alarmStateUpdate$: Observable<AlarmStateSummary>;
@@ -29,6 +31,8 @@ export class AlarmStateService implements AlarmStateBackend {
 
     this.areas = new Set<number>();
 
+    this.openAreas = new Set<number>();
+
     this.disabledAreas = new Set<number>();
 
     this.availabilityUpdateSource = new Subject<AreaAvailability>();
@@ -46,6 +50,12 @@ export class AlarmStateService implements AlarmStateBackend {
     } else {
       this.deactivateSystem();
     }
+
+    this.openAreas = new Set(
+      Array.from(alarmStateSummary.areas)
+        .filter(area => !area.isClosed)
+        .map(area => area.number)
+    );
 
     alarmStateSummary.areas.forEach(area => {
       if (area.isDisabled) {
@@ -95,6 +105,12 @@ export class AlarmStateService implements AlarmStateBackend {
   public getDisabledAreasCountForFloor(floor: number): number {
     return this.getAreasForFloor(floor)
       .filter(area => area.isDisabled)
+      .length;
+  }
+
+  public getOpenAreasCountForFloor(floor: number): number {
+    return Array.from(this.openAreas)
+      .filter(area => AreaFloorMappings.get(area) === floor)
       .length;
   }
 

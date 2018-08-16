@@ -30,7 +30,7 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.isSystemActive = false;
 
     this.alarmSystemService
-      .systemStateUpdate$
+      .systemStatusUpdate$
       .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
 
     this.alarmSystemService

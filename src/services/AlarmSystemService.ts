@@ -49,6 +49,8 @@ export interface AlarmStateBackend {
   getAreasForFloor(floor: number): Array<AreaAvailability>
 
   getDisabledAreasCountForFloor(floor: number): number
+
+  getOpenAreasCountForFloor(floor: number): number
 }
 
 @Injectable()
@@ -59,7 +61,8 @@ export class AlarmSystemService {
   readonly availabilityUpdate$: Observable<AreaAvailability> =
     this.alarmStateBackend.availabilityUpdate$;
 
-  readonly systemStateUpdate$: Observable<boolean> =
+  // May be a good idea to wrap this boolean in an object.
+  readonly systemStatusUpdate$: Observable<boolean> =
     this.alarmStateBackend.systemStateUpdate$;
 
   constructor(private alarmSystemBackend: AlarmSystemBackend,
@@ -156,6 +159,10 @@ export class AlarmSystemService {
 
   public getDisabledAreasCountForFloor(floor: number): number {
     return this.alarmStateBackend.getDisabledAreasCountForFloor(floor);
+  }
+
+  public getOpenAreasCountForFloor(floor: number): number {
+    return this.alarmStateBackend.getOpenAreasCountForFloor(floor);
   }
 
   public testSiren(durationMs: number): Promise<any> {

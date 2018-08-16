@@ -127,7 +127,9 @@ export class ParticleCloudService implements AlarmSystemBackend {
   }
 
   private setOnErrorHandler(onError: (error: any) => void): void {
-    this.close();
-    this.eventsSource.addEventListener('error', onError);
+    this.eventsSource.addEventListener('error', error => {
+      onError(error);
+      this.close();
+    });
   }
 }
