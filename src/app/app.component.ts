@@ -32,22 +32,22 @@ export class App {
             buttons: [ 'De acuerdo' ]
           }).present();
         }
+      }).then(() => {
+        const options: PushOptions = {
+          android: {},
+          ios: {
+            alert: 'true',
+            badge: true,
+            sound: 'false'
+          },
+          windows: {},
+          browser: {
+            pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+          }
+        };
+
+        const pushObj: PushObject = push.init(options);
       });
-
-      const options: PushOptions = {
-        android: {},
-        ios: {
-          alert: 'true',
-          badge: true,
-          sound: 'false'
-        },
-        windows: {},
-        browser: {
-          pushServiceURL: 'http://push.api.phonegap.com/v1/push'
-        }
-      };
-
-      const pushObj: PushObject = push.init(options);
     });
   }
 }
