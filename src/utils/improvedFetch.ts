@@ -3,7 +3,7 @@
 
 function timeoutFetch(url, options, timeout) {
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(_ => reject(new Error('Request timeout')), timeout);
+    const timer = setTimeout(() => reject(new Error('Request timeout')), timeout);
 
     fetch(url, options).then(response => {
       clearTimeout(timer);
@@ -21,6 +21,6 @@ export function improvedFetch(url, options, retries, timeout) {
   }
   else {
     return timeoutFetch(url, options, timeout)
-      .catch(_  => { return improvedFetch(url, options, retries-1, timeout) });
+      .catch(()  => { return improvedFetch(url, options, retries-1, timeout) });
   }
 }

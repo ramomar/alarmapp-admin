@@ -23,7 +23,7 @@ export class ParticleCloudService implements AlarmSystemBackend {
     this.deviceId = deviceId;
   }
 
-  public open(onError: (error: any) => void): void {
+  public open(onOpen: () => void): void {
     const path =[
       'v1',
       'events',
@@ -34,7 +34,8 @@ export class ParticleCloudService implements AlarmSystemBackend {
 
     this.eventsSource = new Events(url.href);
 
-    this.setOnErrorHandler(onError);
+    this.setOnOpenHandler(onOpen);
+    this.setOnErrorHandler(console.log);
   }
 
   public close() {
@@ -122,14 +123,18 @@ export class ParticleCloudService implements AlarmSystemBackend {
     return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
+  public setOnErrorHandler(onError: (error) => void): void {
+    this.eventsSource.addEventListener('error', error => {
+      this.close();
+      onError(error);
+    });
+  }
+
   private setOnMessageHandler(prefix, onMessageHandler: (message) => void): void {
     this.eventsSource.addEventListener(prefix, onMessageHandler, false);
   }
 
-  private setOnErrorHandler(onError: (error: any) => void): void {
-    this.eventsSource.addEventListener('error', error => {
-      this.close();
-      //onError(error);
-    });
+  private setOnOpenHandler(onOpen: () => void): void {
+    this.eventsSource.addEventListener('open', onOpen);
   }
 }

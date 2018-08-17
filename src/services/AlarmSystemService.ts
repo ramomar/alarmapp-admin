@@ -14,7 +14,9 @@ export interface AlarmSystemBackend {
 
   getSystemState(): Promise<any>
 
-  open(onError: (error: any) => void): void
+  open(onOpen: () => void): void
+
+  setOnErrorHandler(onError: (error) => void): void
 
   close(): void
 
@@ -70,29 +72,38 @@ export class AlarmSystemService {
 
   }
 
-  public start(onError: (error: any) => void): void {
-    this.alarmSystemBackend.open(onError);
+  public start(timeoutMs: number = 10000): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.alarmSystemBackend.close();
+        reject(new Error('EventSource timed out'));
+      }, timeoutMs);
 
-    this.alarmSystemBackend.onSystemState(messageEnvelope => {
-      const { data } = messageEnvelope;
+      this.alarmSystemBackend.open(() => {
+        clearTimeout(timer);
 
-      const message = JSON.parse(data);
+        this.alarmSystemBackend.onSystemState(messageEnvelope => {
+          const { data } = messageEnvelope;
 
-      const alarmState: AlarmStateSummary = parseAlarmStateMessage(message.data);
+          const message = JSON.parse(data);
 
-      this.alarmStateBackend.updateState(alarmState);
+          const alarmState: AlarmStateSummary = parseAlarmStateMessage(message.data);
+
+          this.alarmStateBackend.updateState(alarmState);
+        });
+
+        Promise.resolve({ result: '0-0-0-0-0-1|0|0' }).then(response => {
+          //this.alarmSystemBackend.getSystemState().then(response => {
+          if (response.result) {
+            const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
+
+            this.alarmStateBackend.updateState(alarmState);
+          } else {
+            throw  Error('getSystemState() request failed!');
+          }
+        }).then(resolve, reject);
+      });
     });
-
-    Promise.resolve({ result: '0-0-0-0-0-1|0|0' }).then(response => {
-    //this.alarmSystemBackend.getSystemState().then(response => {
-      if (response.result) {
-        const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
-
-        this.alarmStateBackend.updateState(alarmState);
-      } else {
-        throw new Error('getSystemState() request failed!');
-      }
-    }).catch(onError);
   }
 
   public stop(): void {

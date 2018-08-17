@@ -60,8 +60,8 @@ export class HomePage implements OnDestroy {
       this.isDisconnected = this.networkService.isDisconnected();
 
       if (!this.isDisconnected) {
-        this.alarmSystemService.start(e => {
-          this.onError(e);
+        this.alarmSystemService.start().catch(e => {
+          this.onConnectionError(e);
         });
       } else {
         this.presentOfflineAlert();
@@ -73,28 +73,14 @@ export class HomePage implements OnDestroy {
     this.alarmSystemService.stop();
   }
 
-  private onError(error) {
-    const retry = () => {
-      this.alarmSystemService.start(e => { this.onError(e) });
-
-      this.reconnectRetries += 1;
-    };
-
-    this.presentConnectRetryAlert(retry);
-
-    if (this.reconnectRetries === 3) {
-      throw error;
-    }
-  }
-
-  private presentConnectRetryAlert(retryHandler): void {
+  private presentConnectRetryAlert(): void {
     const alertOptions = {
       title: '¡Uy!',
-      message: 'Alarmapp esta teniendo problemas para contectarse.',
+      message: 'Alarmapp esta teniendo problemas para contectarse. ' +
+      'Revisa tu conexión a la red y luego prueba refrescar la aplicación.',
       buttons: [
-        { text: 'Reintentar', handler: retryHandler }
-      ],
-      enableBackdropDismiss: false
+        { text: 'De acuerdo' }
+      ]
     };
 
     const alert = this.alertCtrl.create(alertOptions);
@@ -114,6 +100,28 @@ export class HomePage implements OnDestroy {
     alert.present();
   }
 
+  private onConnectionError(error) {
+    this.reconnectRetries += 1;
+
+    this.presentConnectRetryAlert();
+
+    if (this.reconnectRetries === 3) {
+      throw error;
+    }
+  }
+
+  private doRefresh(refresher): void {
+    this.alarmSystemService
+      .start()
+      .then(() => {
+      refresher.complete();
+      },
+         e => {
+      refresher.complete();
+      this.onConnectionError(e);
+    });
+  }
+
   private activateSystemButton(): void {
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
@@ -124,7 +132,8 @@ export class HomePage implements OnDestroy {
 
   private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
     if (statusUpdate.isOnline) {
-      this.alarmSystemService.start(e => { this.onError(e) });
+      this.alarmSystemService.start()
+        .catch(e => { this.onConnectionError(e) });
     } else {
       this.presentOfflineAlert();
     }
