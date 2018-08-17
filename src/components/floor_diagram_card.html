@@ -7,9 +7,9 @@
   </section>
   <ion-card-content>
     <ion-spinner name="bubbles" *ngIf="isLoading"></ion-spinner>
+    <div *ngIf="!isLoading">
+      <floor-areas-summary [floorNumberString]="floorNumberString">
+      </floor-areas-summary>
+    </div>
   </ion-card-content>
-  <div *ngIf="!isLoading">
-    <floor-areas-summary [floorNumberString]="floorNumberString">
-    </floor-areas-summary>
-  </div>
 </ion-card>
