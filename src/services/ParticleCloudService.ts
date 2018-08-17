@@ -123,6 +123,26 @@ export class ParticleCloudService implements AlarmSystemBackend {
     return improvedFetch(url, options, 3, 10000).then(r => r.json());
   }
 
+  public triggerPanic(): Promise<any> {
+    const url = new URL('v1/devices/events', this.host);
+
+    const body = [
+      'name=triggerPanic',
+      'data=',
+      'private=true',
+      'ttl=60',
+      `access_token=${this.accessToken}`
+    ].join('&');
+
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    };
+
+    return improvedFetch(url, options, 3, 10000).then(r => r.json());
+  }
+
   public setOnErrorHandler(onError: (error) => void): void {
     this.eventsSource.addEventListener('error', error => {
       this.close();

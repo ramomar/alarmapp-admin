@@ -23,6 +23,8 @@ export interface AlarmSystemBackend {
   onSystemState(handler: (object) => void): void
 
   testSiren(durationSecs: number): Promise<any>
+
+  triggerPanic(): Promise<any>
 }
 
 export interface AlarmStateBackend {
@@ -178,6 +180,10 @@ export class AlarmSystemService {
 
   public testSiren(durationMs: number): Promise<any> {
     return this.alarmSystemBackend.testSiren(durationMs);
+  }
+
+  public triggerPanic(): Promise<any> {
+    return this.alarmSystemBackend.triggerPanic();
   }
 
   private activateSystemP(areas: Array<AreaAvailability>): void {

@@ -34,6 +34,10 @@ export class SummaryCard {
     });
   }
 
+  private triggerPanicButton(): void {
+    this.alarmSystemService.triggerPanic();
+  }
+
   private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {
     this.indicators = [
       new SummaryCardIndicator(
