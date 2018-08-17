@@ -5,6 +5,7 @@ import { App } from './app.component';
 
 import { Network } from '@ionic-native/network';
 import { Vibration } from '@ionic-native/vibration';
+import { Push } from '@ionic-native/push';
 
 import { SettingsPage } from '../pages/settings/settings';
 import { HomePage } from '../pages/home/home';
@@ -94,6 +95,7 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
     SplashScreen,
     Vibration,
     Network,
+    Push,
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory },
     { provide: ParticleCloudService, useFactory: particleCloudServiceFactory },
