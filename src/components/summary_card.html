@@ -9,7 +9,8 @@
         <ion-badge item-end color="{{indicator.color}}">{{indicator.content}}</ion-badge>
       </ion-item>
       <button ion-button outline icon-start block small
-        color="danger">
+        color="danger"
+        [disabled]="isDisconnected">
         <ion-icon name="megaphone"></ion-icon>
         Emergencia
       </button>

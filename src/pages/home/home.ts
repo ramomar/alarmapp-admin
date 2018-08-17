@@ -1,17 +1,20 @@
 import { Vibration } from '@ionic-native/vibration';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlertController, NavController } from 'ionic-angular';
+import { Component, OnDestroy } from '@angular/core';
+import { AlertController, NavController, Platform } from 'ionic-angular';
 import { AlarmStateSummary, AlarmSystemService } from '../../services/AlarmSystemService';
+import { NetworkService, NetworkUpdate } from '../../services/NetworkService';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnDestroy {
 
   private overviewSegments: string;
 
   private isLoading: boolean;
+
+  private isDisconnected: boolean;
 
   private reconnectRetries: number;
 
@@ -26,7 +29,9 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private alarmSystemService: AlarmSystemService,
-              private vibration: Vibration) {
+              private platform: Platform,
+              private vibration: Vibration,
+              private networkService: NetworkService) {
     this.overviewSegments = 'summarySegment';
 
     this.isLoading = true;
@@ -39,6 +44,10 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.enableOrDisableSystemButtonText = 'Vigilar';
 
+    this.networkService.networkUpdate$.subscribe(update => {
+      this.handleSystemStatusUpdate(update);
+    });
+
     this.alarmSystemService
       .systemStatusUpdate$
       .subscribe(systemStateUpdate => { this.handleSystemStateUpdate(systemStateUpdate); });
@@ -46,10 +55,18 @@ export class HomePage implements OnInit, OnDestroy {
     this.alarmSystemService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
-  }
 
-  ngOnInit(): void {
-    this.alarmSystemService.start(e => { this.onError(e); });
+    this.platform.ready().then(() => {
+      this.isDisconnected = this.networkService.isDisconnected();
+
+      if (!this.isDisconnected) {
+        this.alarmSystemService.start(e => {
+          this.onError(e);
+        });
+      } else {
+        this.presentOfflineAlert();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -57,22 +74,20 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private onError(error) {
-    console.log(error);
-
     const retry = () => {
       this.alarmSystemService.start(e => { this.onError(e) });
 
       this.reconnectRetries += 1;
     };
 
-    this.presentConnectRetry(retry);
+    this.presentConnectRetryAlert(retry);
 
     if (this.reconnectRetries === 3) {
       throw error;
     }
   }
 
-  private presentConnectRetry(retryHandler): void {
+  private presentConnectRetryAlert(retryHandler): void {
     const alertOptions = {
       title: '¡Uy!',
       message: 'Alarmapp esta teniendo problemas para contectarse.',
@@ -87,12 +102,34 @@ export class HomePage implements OnInit, OnDestroy {
     alert.present();
   }
 
-  private activateSystemButton() {
+  private presentOfflineAlert(): void {
+    const alertOptions = {
+      title: '¡Uy!',
+      message: 'Parece que te quedaste sin conexión a la red. Prueba conectarte a la red.',
+      buttons: [ 'De acuerdo' ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present();
+  }
+
+  private activateSystemButton(): void {
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
     } else {
       this.alarmSystemService.activateSystem();
     }
+  }
+
+  private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
+    if (statusUpdate.isOnline) {
+      this.alarmSystemService.start(e => { this.onError(e) });
+    } else {
+      this.presentOfflineAlert();
+    }
+
+    this.isDisconnected = !statusUpdate.isOnline;
   }
 
   private handleSystemStateUpdate(systemStateUpdate: boolean): void {

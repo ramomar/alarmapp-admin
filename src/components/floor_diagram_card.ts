@@ -10,6 +10,7 @@ import {
   AreaFloorMappings,
   AreaZonesMappings
 } from '../constants/alarmConstants';
+import { NetworkService, NetworkUpdate } from '../services/NetworkService';
 
 @Component({
   selector: 'floor-diagram-card',
@@ -32,10 +33,19 @@ export class FloorDiagramCard implements OnInit {
 
   private isSystemActive: boolean;
 
+  private isDisconnected: boolean;
+
   private diagram;
 
-  constructor(private alarmSystemService: AlarmSystemService) {
+  constructor(private alarmSystemService: AlarmSystemService,
+              private networkService: NetworkService) {
     this.isLoading = true;
+
+    this.isDisconnected = networkService.isDisconnected();
+
+    this.networkService.networkUpdate$.subscribe(update => {
+      this.handleSystemStatusUpdate(update);
+    });
 
     this.alarmSystemService
       .systemStatusUpdate$
@@ -56,6 +66,25 @@ export class FloorDiagramCard implements OnInit {
     this.diagram = this.floorDiagram.nativeElement.firstElementChild;
   }
 
+  private activateSystemOnlyInFloorButton(): void {
+    this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+  }
+
+  private enableOrDisableAreaButton(event): void {
+    const zone = event.target.getAttribute('data-area-name');
+
+    if (
+      !this.isLoading &&
+      !this.isSystemActive &&
+      !this.isDisconnected &&
+      ZoneAreaMappings.has(zone)
+    ) {
+      const area = ZoneAreaMappings.get(zone);
+
+      this.enableOrDisableArea(area);
+    }
+  }
+
   public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
     this.isLoading = false;
 
@@ -64,18 +93,8 @@ export class FloorDiagramCard implements OnInit {
     areas.forEach(area => { this.fillStroke(area) });
   }
 
-  private activateSystemOnlyInFloorButton(): void {
-    this.alarmSystemService.activateSystemForFloor(this.floorNumber);
-  }
-
-  private enableOrDisableAreaButton(event): void {
-    const zone = event.target.getAttribute('data-area-name');
-
-    if (!this.isLoading && !this.isSystemActive && ZoneAreaMappings.has(zone)) {
-      const area = ZoneAreaMappings.get(zone);
-
-      this.enableOrDisableArea(area);
-    }
+  private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
+    this.isDisconnected = !statusUpdate.isOnline;
   }
 
   private handleAvailabilityUpdate(areaAvailabilityUpdate: AreaAvailability): void {

@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { Platform } from 'ionic-angular';
 import { AlarmStateSummary, AlarmSystemService } from '../services/AlarmSystemService';
+import { NetworkService } from '../services/NetworkService';
 
 @Component({
   selector: 'summary-card',
@@ -12,12 +14,24 @@ export class SummaryCard {
 
   private indicators: Array<SummaryCardIndicator>;
 
-  constructor(private alarmSystemService: AlarmSystemService) {
+  private isDisconnected: boolean;
+
+  constructor(private alarmSystemService: AlarmSystemService,
+              private platform: Platform,
+              private networkService: NetworkService) {
     this.indicators = [];
 
     this.alarmSystemService
       .alarmStateUpdate$
       .subscribe(update => { this.handleAlarmStateUpdate(update) });
+
+    this.networkService.networkUpdate$.subscribe(update => {
+      this.isDisconnected = !update.isOnline;
+    });
+
+    this.platform.ready().then(() => {
+      this.isDisconnected = networkService.isDisconnected();
+    });
   }
 
   private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {

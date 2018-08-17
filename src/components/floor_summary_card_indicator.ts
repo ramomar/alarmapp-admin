@@ -4,6 +4,7 @@ import {
   AreaAvailability,
   AreaSummary
 } from '../services/AlarmSystemService';
+import { NetworkUpdate, NetworkService } from '../services/NetworkService';
 
 @Component({
   selector: 'floor-summary-card-indicator',
@@ -16,6 +17,8 @@ export class FloorSummaryCardIndicator implements OnInit {
 
   private isSystemActive: boolean;
 
+  private isDisconnected: boolean;
+
   private title: string;
 
   private content: string;
@@ -26,8 +29,15 @@ export class FloorSummaryCardIndicator implements OnInit {
 
   private color: string;
 
-  constructor(private alarmSystemService: AlarmSystemService) {
+  constructor(private alarmSystemService: AlarmSystemService,
+              private networkService: NetworkService) {
     this.isSystemActive = false;
+
+    this.isDisconnected = networkService.isDisconnected();
+
+    this.networkService.networkUpdate$.subscribe(update => {
+      this.handleSystemStatusUpdate(update);
+    });
 
     this.alarmSystemService
       .systemStatusUpdate$
@@ -56,6 +66,10 @@ export class FloorSummaryCardIndicator implements OnInit {
     } else {
       this.alarmSystemService.disableArea(this.area);
     }
+  }
+
+  private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
+    this.isDisconnected = !statusUpdate.isOnline;
   }
 
   private handleSystemStateUpdate(systemStateUpdate: boolean): void {

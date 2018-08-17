@@ -27,10 +27,6 @@ export class FloorSummaryCard implements OnInit {
 
   constructor(private alarmSystemService: AlarmSystemService) {
     this.areaSummaries = [];
-  }
-
-  ngOnInit(): void {
-    this.floorNumber = parseInt(this.floorNumberString, 10);
 
     this.alarmSystemService
       .alarmStateUpdate$
@@ -38,7 +34,11 @@ export class FloorSummaryCard implements OnInit {
 
     this.alarmSystemService
       .availabilityUpdate$
-      .subscribe(_ => { this.updateDisabledAreasCount(); });
+      .subscribe(() => { this.updateDisabledAreasCount(); });
+  }
+
+  ngOnInit(): void {
+    this.floorNumber = parseInt(this.floorNumberString, 10);
   }
 
   private handleAlarmStateUpdate(alarmStateSummary: AlarmStateSummary): void {

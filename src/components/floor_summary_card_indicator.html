@@ -7,7 +7,7 @@
   </div>
   <button ion-button small outline item-right icon-only
           (click)="handleEnableOrDisableAreaIndicatorTap()"
-          [disabled]="isSystemActive"
+          [disabled]="isSystemActive || isDisconnected"
           color="primary">
       <ion-icon [name]="iconName"></ion-icon>
   </button>

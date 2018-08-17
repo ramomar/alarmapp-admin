@@ -3,7 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { App } from './app.component';
 
-import { Vibration } from '@ionic-native/vibration'
+import { Network } from '@ionic-native/network';
+import { Vibration } from '@ionic-native/vibration';
 
 import { SettingsPage } from '../pages/settings/settings';
 import { HomePage } from '../pages/home/home';
@@ -20,6 +21,7 @@ import { FloorSummaryCardIndicator } from '../components/floor_summary_card_indi
 import { ParticleCloudService } from '../services/ParticleCloudService';
 import { AlarmStateService } from '../services/AlarmStateService';
 import { AlarmSystemService } from '../services/AlarmSystemService';
+import { NetworkService } from '../services/NetworkService';
 
 import Config from '../config.json';
 
@@ -91,9 +93,11 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
     StatusBar,
     SplashScreen,
     Vibration,
+    Network,
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },
     { provide: AlarmSystemService, useFactory: alarmSystemServiceFactory },
-    { provide: ParticleCloudService, useFactory: particleCloudServiceFactory }
+    { provide: ParticleCloudService, useFactory: particleCloudServiceFactory },
+    NetworkService
   ]
 })
 export class AppModule {}

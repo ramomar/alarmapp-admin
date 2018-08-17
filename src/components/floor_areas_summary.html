@@ -20,7 +20,7 @@
   <ion-col align-self-center text-center>
     <button ion-button icon-start clear small
             (click)="activateSystemOnlyInFloorButton()"
-            [disabled]="isLoading || isSystemActive">
+            [disabled]="isLoading || isSystemActive || isDisconnected">
       <ion-icon name="eye"></ion-icon>
       <div>Vigilar solo aquí</div>
     </button>
