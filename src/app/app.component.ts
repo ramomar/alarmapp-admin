@@ -26,9 +26,9 @@ export class App {
       push.hasPermission().then((res: any) => {
         if (!res.isEnabled)  {
           alertCtrl.create({
-            title: 'Sin notificaciones push',
-            subTitle: 'No nos has dado permiso para las notificaciones push. Ve a los ajustes de ' +
-            'tu dispositivo para que habilites las notificaciones.',
+            title: 'Notificaciones push',
+            subTitle: '¡No te olvides de habilitar las notificaciones push! Ve a los ajustes de ' +
+            'tu dispositivo para que habilites las notificaciones si no lo has hecho.',
             buttons: [ 'De acuerdo' ]
           }).present();
         }
