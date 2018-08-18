@@ -20,11 +20,11 @@ export class HomePage implements OnDestroy {
 
   private isSystemActive: boolean;
 
-  private enableOrDisableSystemButtonIcon: string;
+  private activateOrDeactivateSystemButtonIcon: string;
 
-  private enableOrDisableSystemButtonText: string;
+  private activateOrDeactivateSystemButtonText: string;
 
-  private enableOrDisableSystemButtonColor: string;
+  private activateOrDeactivateSystemButtonColor: string;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -38,11 +38,11 @@ export class HomePage implements OnDestroy {
 
     this.reconnectRetries = 0;
 
-    this.enableOrDisableSystemButtonIcon = 'eye';
+    this.activateOrDeactivateSystemButtonIcon = 'eye';
 
-    this.enableOrDisableSystemButtonColor = 'primary';
+    this.activateOrDeactivateSystemButtonColor = 'primary';
 
-    this.enableOrDisableSystemButtonText = 'Vigilar';
+    this.activateOrDeactivateSystemButtonText = 'Vigilar';
 
     this.networkService.networkUpdate$.subscribe(update => {
       this.handleSystemStatusUpdate(update);
@@ -127,6 +127,7 @@ export class HomePage implements OnDestroy {
       this.alarmSystemService.deactivateSystem();
     } else {
       this.alarmSystemService.activateSystem();
+      this.vibration.vibrate(200);
     }
   }
 
@@ -144,28 +145,24 @@ export class HomePage implements OnDestroy {
   private handleSystemStateUpdate(systemStateUpdate: boolean): void {
     this.isSystemActive = systemStateUpdate;
 
-    if (systemStateUpdate) {
-      this.vibration.vibrate(200);
-    }
-
-    this.updateEnableOrDisableSystemButton(systemStateUpdate);
+    this.updateActivateOrDeactivateSystemButton(systemStateUpdate);
   }
 
   private handleAlarmStateUpdate(alarmState: AlarmStateSummary): void {
     this.isLoading = false;
 
-    this.updateEnableOrDisableSystemButton(alarmState.isSystemActive);
+    this.updateActivateOrDeactivateSystemButton(alarmState.isSystemActive);
   }
 
-  private updateEnableOrDisableSystemButton(isSystemActive: boolean): void {
+  private updateActivateOrDeactivateSystemButton(isSystemActive: boolean): void {
     if (isSystemActive) {
-      this.enableOrDisableSystemButtonIcon = 'eye-off';
-      this.enableOrDisableSystemButtonText = 'Dejar de vigilar';
-      this.enableOrDisableSystemButtonColor = 'danger';
+      this.activateOrDeactivateSystemButtonIcon = 'eye-off';
+      this.activateOrDeactivateSystemButtonText = 'Dejar de vigilar';
+      this.activateOrDeactivateSystemButtonColor = 'danger';
     } else {
-      this.enableOrDisableSystemButtonIcon = 'eye';
-      this.enableOrDisableSystemButtonText = 'Vigilar';
-      this.enableOrDisableSystemButtonColor = 'primary';
+      this.activateOrDeactivateSystemButtonIcon = 'eye';
+      this.activateOrDeactivateSystemButtonText = 'Vigilar';
+      this.activateOrDeactivateSystemButtonColor = 'primary';
     }
   }
 }
