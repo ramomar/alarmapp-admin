@@ -4,7 +4,6 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { App } from './app.component';
 
 import { Network } from '@ionic-native/network';
-import { Vibration } from '@ionic-native/vibration';
 import { Push } from '@ionic-native/push';
 
 import { SettingsPage } from '../pages/settings/settings';
@@ -93,7 +92,6 @@ class SentryIonicErrorHandler extends IonicErrorHandler {
   providers: [
     StatusBar,
     SplashScreen,
-    Vibration,
     Network,
     Push,
     { provide: ErrorHandler, useClass: SentryIonicErrorHandler },

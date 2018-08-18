@@ -1,4 +1,3 @@
-import { Vibration } from '@ionic-native/vibration';
 import { Component, OnDestroy } from '@angular/core';
 import { AlertController, NavController, Platform } from 'ionic-angular';
 import { AlarmStateSummary, AlarmSystemService } from '../../services/AlarmSystemService';
@@ -30,7 +29,6 @@ export class HomePage implements OnDestroy {
               public alertCtrl: AlertController,
               private alarmSystemService: AlarmSystemService,
               private platform: Platform,
-              private vibration: Vibration,
               private networkService: NetworkService) {
     this.overviewSegments = 'summarySegment';
 
@@ -127,7 +125,6 @@ export class HomePage implements OnDestroy {
       this.alarmSystemService.deactivateSystem();
     } else {
       this.alarmSystemService.activateSystem();
-      this.vibration.vibrate(200);
     }
   }
 
