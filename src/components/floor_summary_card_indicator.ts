@@ -4,6 +4,7 @@ import {
   AreaAvailability,
   AreaSummary
 } from '../services/AlarmSystemService';
+import { AreaNameMappings } from '../constants/alarmConstants';
 import { NetworkUpdate, NetworkService } from '../services/NetworkService';
 
 @Component({
@@ -50,7 +51,7 @@ export class FloorSummaryCardIndicator implements OnInit {
   }
 
   ngOnInit(): void {
-    this.title = `Area ${this.areaSummary.number}`;
+    this.title = `${AreaNameMappings.get(this.areaSummary.number)}`;
     this.content = this.areaSummary.isClosed ? 'Cerrada': 'Abierta';
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
