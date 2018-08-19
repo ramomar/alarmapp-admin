@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 import { TabsPage } from '../pages/tabs/tabs';
@@ -14,14 +13,12 @@ export class App {
 
   constructor(platform: Platform,
               statusBar: StatusBar,
-              splashScreen: SplashScreen,
               push: Push,
               alertCtrl: AlertController) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
-      splashScreen.hide();
 
       push.hasPermission().then((res: any) => {
         if (!res.isEnabled)  {
