@@ -71,6 +71,20 @@ export class HomePage implements OnDestroy {
     this.alarmSystemService.stop();
   }
 
+  private presentOpenAreasAlert(): void {
+    const alertOptions = {
+      title: 'Areas abiertas',
+      message: 'Tienes algunas areas abiertas. Por favor deshabilitalas o cierralas.',
+      buttons: [
+        { text: 'De acuerdo' }
+      ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present()
+  }
+
   private presentConnectRetryAlert(): void {
     const alertOptions = {
       title: '¡Uy!',
@@ -124,7 +138,12 @@ export class HomePage implements OnDestroy {
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
     } else {
-      this.alarmSystemService.activateSystem();
+
+      if (this.alarmSystemService.isReadyToActivate()) {
+        this.alarmSystemService.activateSystem();
+      } else {
+        this.presentOpenAreasAlert();
+      }
     }
   }
 

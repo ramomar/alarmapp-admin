@@ -56,7 +56,7 @@ export class FloorSummaryCardIndicator implements OnInit {
     this.iconName = this.areaSummary.isDisabled ? 'eye' : 'eye-off';
     this.color = this.areaSummary.isClosed ? 'secondary' : 'danger';
     this.area = this.areaSummary.number;
-    this.isSystemActive = this.alarmSystemService.getIsSystemActive();
+    this.isSystemActive = this.alarmSystemService.isActive();
   }
 
   private handleEnableOrDisableAreaIndicatorTap(): void {

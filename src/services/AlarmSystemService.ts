@@ -46,7 +46,11 @@ export interface AlarmStateBackend {
 
   deactivateSystem(): void
 
-  getIsSystemActive(): boolean
+  isReadyToActivate(): boolean;
+
+  isFloorReady(): boolean;
+
+  isActive(): boolean
 
   getAreas(): Array<AreaAvailability>
 
@@ -146,8 +150,16 @@ export class AlarmSystemService {
     this.activateSystemP(updatedAreas);
   }
 
-  public getIsSystemActive(): boolean {
-    return this.alarmStateBackend.getIsSystemActive();
+  public isActive(): boolean {
+    return this.alarmStateBackend.isActive();
+  }
+
+  public isReadyToActivate(): boolean {
+    return this.alarmStateBackend.isReadyToActivate();
+  }
+
+  public isFloorReady(floor: number): boolean {
+    return this.alarmStateBackend.isFloorReady(floor);
   }
 
   public enableArea(area: number): void {

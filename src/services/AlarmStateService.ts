@@ -124,7 +124,27 @@ export class AlarmStateService implements AlarmStateBackend {
     this.systemStateUpdateSource.next(false);
   }
 
-  public getIsSystemActive(): boolean {
+  public isActive(): boolean {
     return this.isSystemActive;
+  }
+
+  public isReadyToActivate(): boolean {
+    return this.isFloorReady(1) &&
+      this.isFloorReady(2);
+  }
+
+  public isFloorReady(floor: number): boolean {
+    if (this.isSystemActive) {
+      return false;
+    }
+
+    return this.getAreasForFloor(floor)
+      .map(area => area.number)
+      .every((area) => {
+        const isClosed = !this.openAreas.has(area);
+        const isDisabled = this.disabledAreas.has(area);
+
+        return isClosed || isDisabled;
+      });
   }
 }

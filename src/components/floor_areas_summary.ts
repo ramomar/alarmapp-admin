@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AlertController } from 'ionic-angular';
 import { merge } from 'rxjs/observable/merge';
 import { AlarmSystemService } from '../services/AlarmSystemService';
 import { NetworkService, NetworkUpdate } from '../services/NetworkService';
@@ -23,6 +24,7 @@ export class FloorAreasSummary implements OnInit {
   private isSystemActive: boolean;
 
   constructor(private alarmSystemService: AlarmSystemService,
+              private alertCtrl: AlertController,
               private networkService: NetworkService) {
     this.isDisconnected = this.networkService.isDisconnected();
 
@@ -46,8 +48,26 @@ export class FloorAreasSummary implements OnInit {
       .getDisabledAreasCountForFloor(this.floorNumber);
   }
 
+  private presentOpenAreasAlert(): void {
+    const alertOptions = {
+      title: 'Areas abiertas',
+      message: 'Tienes algunas areas abiertas en este piso. Por favor deshabilitalas o cierralas.',
+      buttons: [
+        { text: 'De acuerdo' }
+      ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present()
+  }
+
   private activateSystemOnlyInFloorButton(): void {
-    this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+    if (this.alarmSystemService.isFloorReady(this.floorNumber)) {
+      this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+    } else {
+      this.presentOpenAreasAlert();
+    }
   }
 
   private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
@@ -55,7 +75,7 @@ export class FloorAreasSummary implements OnInit {
   }
 
   private handleSystemUpdate(): void {
-    this.isSystemActive = this.alarmSystemService.getIsSystemActive();
+    this.isSystemActive = this.alarmSystemService.isActive();
 
     this.openAreasCount = this.alarmSystemService
       .getOpenAreasCountForFloor(this.floorNumber);
