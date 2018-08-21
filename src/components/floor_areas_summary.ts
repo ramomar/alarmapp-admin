@@ -77,7 +77,6 @@ export class FloorAreasSummary implements OnInit {
   }
 
   private activateSystemOnlyInFloorButton(): void {
-
     if (this.alarmSystemService.isFloorReady(this.floorNumber)) {
       if (this.alarmSystemService.allAreasDisabledForFloor(this.floorNumber)) {
         this.notProtectingAnythingAlert();

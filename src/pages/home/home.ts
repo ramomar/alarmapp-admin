@@ -25,6 +25,14 @@ export class HomePage implements OnDestroy {
 
   private activateOrDeactivateSystemButtonColor: string;
 
+  // Prevent alerts being fired excessively due to intermittent retries due to
+  // network connection/disconnection.
+  private connectRetryAlertPresented: boolean;
+
+  // Prevent alerts being fired excessively due to intermittent network connection/disconnection.
+  private networkOfflineAlertPresented: boolean;
+
+
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private alarmSystemService: AlarmSystemService,
@@ -65,6 +73,10 @@ export class HomePage implements OnDestroy {
         this.presentOfflineAlert();
       }
     });
+
+    this.connectRetryAlertPresented = false;
+
+    this.networkOfflineAlertPresented = false;
   }
 
   ngOnDestroy(): void {
@@ -103,27 +115,41 @@ export class HomePage implements OnDestroy {
     const alertOptions = {
       title: '¡Uy!',
       message: 'Alarmapp esta teniendo problemas para contectarse. ' +
-      'Revisa tu conexión a la red y luego prueba refrescar la aplicación.',
+               'Revisa tu conexión a la red y luego prueba refrescar la aplicación.',
       buttons: [
-        { text: 'De acuerdo' }
+        {
+          text: 'De acuerdo',
+          handler: () => { this.connectRetryAlertPresented = false; }
+        }
       ]
     };
 
     const alert = this.alertCtrl.create(alertOptions);
 
-    alert.present();
+    if (!this.connectRetryAlertPresented) {
+      this.connectRetryAlertPresented = true;
+      alert.present();
+    }
   }
 
   private presentOfflineAlert(): void {
     const alertOptions = {
       title: '¡Uy!',
       message: 'Parece que te quedaste sin conexión a la red. Prueba conectarte a la red.',
-      buttons: [ 'De acuerdo' ]
+      buttons: [
+        {
+          text: 'De acuerdo',
+          handler: () => { this.networkOfflineAlertPresented = false; }
+        }
+      ]
     };
 
     const alert = this.alertCtrl.create(alertOptions);
 
-    alert.present();
+    if (!this.networkOfflineAlertPresented) {
+      this.networkOfflineAlertPresented = true;
+      alert.present();
+    }
   }
 
   private onConnectionError(error) {
