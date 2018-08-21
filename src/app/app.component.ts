@@ -31,11 +31,16 @@ export class App {
         }
       }).then(() => {
         const options: PushOptions = {
-          android: {},
+          android: {
+            topics: [ 'alarmSystem' ],
+            sound: true,
+            vibrate: true
+          },
           ios: {
             alert: 'true',
             badge: true,
-            sound: 'false'
+            sound: 'true',
+            topics: [ 'alarmSystem' ]
           },
           windows: {},
           browser: {
