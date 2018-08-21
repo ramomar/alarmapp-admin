@@ -71,6 +71,20 @@ export class HomePage implements OnDestroy {
     this.alarmSystemService.stop();
   }
 
+  private notProtectingAnythingAlert(): void {
+    const alertOptions = {
+      title: 'No es seguro activar el sistema',
+      message: 'Todas las areas están desactivadas.',
+      buttons: [
+        { text: 'De acuerdo' }
+      ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present();
+  }
+
   private presentOpenAreasAlert(): void {
     const alertOptions = {
       title: 'Areas abiertas',
@@ -138,11 +152,14 @@ export class HomePage implements OnDestroy {
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
     } else {
-
-      if (this.alarmSystemService.isReadyToActivate()) {
-        this.alarmSystemService.activateSystem();
+      if (this.alarmSystemService.allAreasDisabled()) {
+        this.notProtectingAnythingAlert();
       } else {
-        this.presentOpenAreasAlert();
+        if (this.alarmSystemService.isReadyToActivate()) {
+          this.alarmSystemService.activateSystem();
+        } else {
+          this.presentOpenAreasAlert();
+        }
       }
     }
   }

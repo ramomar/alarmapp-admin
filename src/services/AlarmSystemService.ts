@@ -8,23 +8,23 @@ export interface AlarmSystemBackend {
 
   deactivateSystem(): Promise<any>;
 
-  activateSystem(areas: Array<AreaAvailability>): Promise<any>
+  activateSystem(areas: Array<AreaAvailability>): Promise<any>;
 
-  deactivateSystem(): Promise<any>
+  deactivateSystem(): Promise<any>;
 
-  getSystemState(): Promise<any>
+  getSystemState(): Promise<any>;
 
-  open(onOpen: () => void): void
+  open(onOpen: () => void): void;
 
-  setOnErrorHandler(onError: (error) => void): void
+  setOnErrorHandler(onError: (error) => void): void;
 
-  close(): void
+  close(): void;
 
-  onSystemState(handler: (object) => void): void
+  onSystemState(handler: (object) => void): void;
 
-  testSiren(durationSecs: number): Promise<any>
+  testSiren(durationSecs: number): Promise<any>;
 
-  triggerPanic(): Promise<any>
+  triggerPanic(): Promise<any>;
 }
 
 export interface AlarmStateBackend {
@@ -36,29 +36,34 @@ export interface AlarmStateBackend {
 
   updateState(alarmStateSummary: AlarmStateSummary): void
 
-  enableArea(area: number): void
+  enableArea(area: number): void;
 
-  disableArea(area: number): void
+  disableArea(area: number): void;
 
-  isDisabled(area: number): boolean
+  isDisabled(area: number): boolean;
 
-  activateSystem(): void
+  activateSystem(): void;
 
-  deactivateSystem(): void
+  deactivateSystem(): void;
 
   isReadyToActivate(): boolean;
 
-  isFloorReady(): boolean;
+  isFloorReady(floor: number): boolean;
 
-  isActive(): boolean
+  isActive(): boolean;
 
-  getAreas(): Array<AreaAvailability>
+  getAreas(): Array<AreaAvailability>;
 
-  getAreasForFloor(floor: number): Array<AreaAvailability>
+  getAreasForFloor(floor: number): Array<AreaAvailability>;
 
-  getDisabledAreasCountForFloor(floor: number): number
+  getDisabledAreasCountForFloor(floor: number): number;
 
-  getOpenAreasCountForFloor(floor: number): number
+  getOpenAreasCountForFloor(floor: number): number;
+
+  allAreasDisabled(): boolean;
+
+  allAreasDisabledForFloor(floor: number): boolean;
+
 }
 
 @Injectable()
@@ -196,6 +201,14 @@ export class AlarmSystemService {
 
   public triggerPanic(): Promise<any> {
     return this.alarmSystemBackend.triggerPanic();
+  }
+
+  public allAreasDisabled(): boolean {
+    return this.alarmStateBackend.allAreasDisabled();
+  }
+
+  public allAreasDisabledForFloor(floor: number): boolean {
+    return this.alarmStateBackend.allAreasDisabledForFloor(floor);
   }
 
   private activateSystemP(areas: Array<AreaAvailability>): void {

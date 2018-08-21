@@ -147,4 +147,17 @@ export class AlarmStateService implements AlarmStateBackend {
         return isClosed || isDisabled;
       });
   }
+
+  public allAreasDisabled(): boolean {
+    return this.allAreasDisabledForFloor(1) &&
+      this.allAreasDisabledForFloor(2);
+  }
+
+  public allAreasDisabledForFloor(floor: number): boolean {
+    return this.getAreasForFloor(floor)
+      .map(area => area.number)
+      .every(area => {
+        return this.disabledAreas.has(area);
+      });
+  }
 }

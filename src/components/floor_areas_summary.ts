@@ -48,6 +48,20 @@ export class FloorAreasSummary implements OnInit {
       .getDisabledAreasCountForFloor(this.floorNumber);
   }
 
+  private notProtectingAnythingAlert(): void {
+    const alertOptions = {
+      title: 'No es seguro activar el sistema',
+      message: 'Todas las areas están desactivadas en este piso.',
+      buttons: [
+        { text: 'De acuerdo' }
+      ]
+    };
+
+    const alert = this.alertCtrl.create(alertOptions);
+
+    alert.present();
+  }
+
   private presentOpenAreasAlert(): void {
     const alertOptions = {
       title: 'Areas abiertas',
@@ -63,8 +77,13 @@ export class FloorAreasSummary implements OnInit {
   }
 
   private activateSystemOnlyInFloorButton(): void {
+
     if (this.alarmSystemService.isFloorReady(this.floorNumber)) {
-      this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+      if (this.alarmSystemService.allAreasDisabledForFloor(this.floorNumber)) {
+        this.notProtectingAnythingAlert();
+      } else {
+        this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+      }
     } else {
       this.presentOpenAreasAlert();
     }
