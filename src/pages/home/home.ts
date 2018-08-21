@@ -32,6 +32,7 @@ export class HomePage implements OnDestroy {
   // Prevent alerts being fired excessively due to intermittent network connection/disconnection.
   private networkOfflineAlertPresented: boolean;
 
+  private latestActivateSystemButtonPress: number;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -77,6 +78,8 @@ export class HomePage implements OnDestroy {
     this.connectRetryAlertPresented = false;
 
     this.networkOfflineAlertPresented = false;
+
+    this.latestActivateSystemButtonPress = (new Date).getTime();
   }
 
   ngOnDestroy(): void {
@@ -175,6 +178,15 @@ export class HomePage implements OnDestroy {
   }
 
   private activateSystemButton(): void {
+    // TODO: refactor?
+    const timeAtPress = (new Date()).getTime();
+
+    const deltaInSecs = (timeAtPress - this.latestActivateSystemButtonPress) / 1000;
+
+    if (deltaInSecs < 3) {
+      return;
+    }
+
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
     } else {
@@ -188,6 +200,8 @@ export class HomePage implements OnDestroy {
         }
       }
     }
+
+    this.latestActivateSystemButtonPress = timeAtPress;
   }
 
   private handleSystemStatusUpdate(statusUpdate: NetworkUpdate) {
