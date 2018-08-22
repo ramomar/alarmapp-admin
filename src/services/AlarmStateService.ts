@@ -129,8 +129,10 @@ export class AlarmStateService implements AlarmStateBackend {
   }
 
   public isReadyToActivate(): boolean {
-    return this.isFloorReady(1) &&
-      this.isFloorReady(2);
+    return !this.isSystemActive &&
+      !this.allAreasDisabled() &&
+      this.allOpenAreasDisabled(1)&&
+      this.allOpenAreasDisabled(2);
   }
 
   public isFloorReady(floor: number): boolean {
@@ -138,14 +140,8 @@ export class AlarmStateService implements AlarmStateBackend {
       return false;
     }
 
-    return this.getAreasForFloor(floor)
-      .map(area => area.number)
-      .every((area) => {
-        const isClosed = !this.openAreas.has(area);
-        const isDisabled = this.disabledAreas.has(area);
-
-        return isClosed || isDisabled;
-      });
+    return !this.allAreasDisabledForFloor(floor) &&
+      this.allOpenAreasDisabled(floor);
   }
 
   public allAreasDisabled(): boolean {
@@ -158,6 +154,17 @@ export class AlarmStateService implements AlarmStateBackend {
       .map(area => area.number)
       .every(area => {
         return this.disabledAreas.has(area);
+      });
+  }
+
+  private allOpenAreasDisabled(floor: number) {
+    return this.getAreasForFloor(floor)
+      .map(area => area.number)
+      .every((area) => {
+        const isClosed = !this.openAreas.has(area);
+        const isDisabled = this.disabledAreas.has(area);
+
+        return isClosed || isDisabled;
       });
   }
 }

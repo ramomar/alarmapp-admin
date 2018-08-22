@@ -178,26 +178,23 @@ export class HomePage implements OnDestroy {
   }
 
   private activateSystemButton(): void {
-    // TODO: refactor?
     const timeAtPress = (new Date()).getTime();
 
     const deltaInSecs = (timeAtPress - this.latestActivateSystemButtonPress) / 1000;
 
-    if (deltaInSecs < 3) {
+    if (deltaInSecs < 1) {
       return;
     }
 
     if (this.isSystemActive) {
       this.alarmSystemService.deactivateSystem();
     } else {
-      if (this.alarmSystemService.allAreasDisabled()) {
+      if (this.alarmSystemService.isReadyToActivate()) {
+        this.alarmSystemService.activateSystem();
+      } else if (this.alarmSystemService.allAreasDisabled()) {
         this.notProtectingAnythingAlert();
       } else {
-        if (this.alarmSystemService.isReadyToActivate()) {
-          this.alarmSystemService.activateSystem();
-        } else {
-          this.presentOpenAreasAlert();
-        }
+        this.presentOpenAreasAlert();
       }
     }
 

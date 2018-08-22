@@ -77,14 +77,12 @@ export class FloorAreasSummary implements OnInit {
   }
 
   private activateSystemOnlyInFloorButton(): void {
-    // TODO: refactor?
     if (this.alarmSystemService.isFloorReady(this.floorNumber)) {
-      if (this.alarmSystemService.allAreasDisabledForFloor(this.floorNumber)) {
-        this.notProtectingAnythingAlert();
-      } else {
-        this.alarmSystemService.activateSystemForFloor(this.floorNumber);
-      }
-    } else {
+      this.alarmSystemService.activateSystemForFloor(this.floorNumber);
+    } else if (this.alarmSystemService.allAreasDisabledForFloor(this.floorNumber)) {
+      this.notProtectingAnythingAlert();
+    }
+    else {
       this.presentOpenAreasAlert();
     }
   }
