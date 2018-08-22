@@ -103,8 +103,8 @@ export class AlarmSystemService {
           this.alarmStateBackend.updateState(alarmState);
         });
 
-        Promise.resolve({ result: '0-0-0-0-0-1|0|0' }).then(response => {
-          //this.alarmSystemBackend.getSystemState().then(response => {
+        //Promise.resolve({ result: '0-0-0-0-0-1|0|0' }).then(response => {
+        this.alarmSystemBackend.getSystemState().then(response => {
           if (response.result) {
             const alarmState: AlarmStateSummary = parseAlarmStateMessage(response.result);
 
