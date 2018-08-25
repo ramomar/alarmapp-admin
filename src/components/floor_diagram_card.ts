@@ -85,7 +85,7 @@ export class FloorDiagramCard implements OnInit {
     }
   }
 
-  public handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
+  private handleAlarmStateUpdate(alarmStateUpdate: AlarmStateSummary): void {
     this.isLoading = false;
 
     const areas = alarmStateUpdate.getAreasForFloor(this.floorNumber);
