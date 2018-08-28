@@ -1,6 +1,10 @@
 # Alarmapp Admin
 Control panel for the [Alarmapp](https://github.com/ramomar/alarmapp) project made with Ionic.
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/10622989/44741599-2d4a7880-aac3-11e8-9959-4d49ef1ab0e5.gif">
+</p>
+
 ## Features
 
 - [Realtime system state updates (e.g., a window opens, a door closes, etc.)](https://user-images.githubusercontent.com/10622989/44741183-faec4b80-aac1-11e8-995d-4f72b44b3a25.gif).
