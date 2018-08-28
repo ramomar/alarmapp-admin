@@ -117,7 +117,7 @@ export class HomePage implements OnDestroy {
   private presentConnectRetryAlert(): void {
     const alertOptions = {
       title: '¡Uy!',
-      message: 'Alarmapp esta teniendo problemas para contectarse. ' +
+      message: 'Alarmapp esta teniendo problemas para conectarse. ' +
                'Revisa tu conexión a la red y luego prueba refrescar la aplicación.',
       buttons: [
         {
