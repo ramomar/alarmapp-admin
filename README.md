@@ -28,6 +28,12 @@ Since this is a personal project, I decided to hardcode tokens in files in order
 
 You must set your own credentials in the following files: `src/config.json` and `sentry.properties`.
 
+| Credential | Description | File |
+|------------|-------------|------|
+| PARTICLE_ACCESS_TOKEN | Your access token to the Particle Cloud API. | `src/config.json` |
+| PARTICLE_DEVICE_ID | The ID of your Particle Photon. | `src/config.json` |
+| SENTRY_DSN | DSN provided by Sentry. | `src/config.json` |
+| auth.token | Access token provided by Sentry. | `sentry.properties`|
 ## Deploying to devices
 
 Run `ionic cordova run android` or `ionic cordova run ios`.
