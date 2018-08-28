@@ -7,7 +7,7 @@ Control panel for the [Alarmapp](https://github.com/ramomar/alarmapp) project ma
 
 ## Features
 
-- [Realtime system state updates (e.g., a window opens, a door closes, etc.)](https://user-images.githubusercontent.com/10622989/44741183-faec4b80-aac1-11e8-995d-4f72b44b3a25.gif).
+- [Realtime system state updates (e.g., a window opens, a door closes, etc.)](https://github.com/ramomar/alarmapp-admin/issues/1#issuecomment-416682576).
 - Push notifications when system gets breached or is in panic mode.
 - Sentry for error reporting.
 - Activate/deactivate system.
