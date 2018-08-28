@@ -12,6 +12,7 @@ Control panel for the [Alarmapp](https://github.com/ramomar/alarmapp) project ma
 - General summary view.
 - Floor diagram summary view.
 - Test siren button.
+- Pull down to refresh.
 - _Push notifications not enabled_ alert.
 - _Not watching anything_ alert (all areas are disabled or all areas are open).
 - _No network_ alert.
